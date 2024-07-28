@@ -48,55 +48,73 @@ class FetchChapterImages extends Command
 
         $this->info('Image fetching completed.');
     }
-
     protected function fetchImages($manhwa, $chapter)
     {
         $manhwaFolder = strtolower(str_replace(' ', '-', $manhwa->name));
         $chapterFolder = 'chapter-' . $chapter->chapter_number;
         $baseDirectory = realpath(__DIR__ . '/../../../wordpress/downloads/' . $manhwaFolder . '/' . $chapterFolder);
-
+    
         if ($baseDirectory === false) {
             $baseDirectory = __DIR__ . '/../../../../wordpress/downloads/' . $manhwaFolder . '/' . $chapterFolder;
         }
-
+    
         if (!File::exists($baseDirectory)) {
             File::makeDirectory($baseDirectory, 0755, true);
         }
+        
+        try {
+            $htmlContent = $this->httpClient->get($chapter->link)->getBody()->getContents();
+            // Log the HTML content to a file for debugging
+            File::put(storage_path('logs/crawl_debug_' . $chapter->id . '.html'), $htmlContent);
+    
+            $crawler = new \Symfony\Component\DomCrawler\Crawler($htmlContent);
+            
+         if($chapter->source == 'manhuafast'){
+        
+            $images = $crawler->filter('.reading-content .page-break img')->each(function ($node) {
+                return trim($node->attr('data-src'));
+            });
+    
+         }else{
 
-        $crawler = new \Symfony\Component\DomCrawler\Crawler();
-        $crawler->addHtmlContent($this->httpClient->get($chapter->link)->getBody()->getContents());
-
-        $images = $crawler->filter('.reading-content .page-break img')->each(function ($node) {
-            return trim($node->attr('data-src'));
-        });
-
-        if (empty($images)) {
-            $this->error("No images found for chapter URL: {$chapter->link}");
-            return false;
-        }
-
-        if (count($images) > 20) {
-            return $this->combineImages($images, $baseDirectory);
-        } else {
-            foreach ($images as $index => $imgUrl) {
-                $fileExtension = pathinfo(parse_url($imgUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
-                $filePath = $baseDirectory . '/image-' . ($index + 1) . '.' . $fileExtension;
-
-                if (!$this->downloadImage($imgUrl, $filePath)) {
-                    return false;
+            $images = $crawler->filter('.reading-content img.wp-manga-chapter-img')->each(function ($node) {
+                return trim($node->attr('src'));
+            });
+    
+         }
+       
+            if (empty($images)) {
+                $this->error("No images found for chapter URL: {$chapter->link}");
+                return false;
+            }
+    
+            if (count($images) > 20) {
+                return $this->combineImages($images, $baseDirectory);
+            } else {
+                foreach ($images as $index => $imgUrl) {
+                    $fileExtension = pathinfo(parse_url($imgUrl, PHP_URL_PATH), PATHINFO_EXTENSION);
+                    $filePath = $baseDirectory . '/image-' . ($index + 1) . '.' . $fileExtension;
+    
+                    if (!$this->downloadImage($imgUrl, $filePath)) {
+                        return false;
+                    }
                 }
             }
+        } catch (\Exception $e) {
+            $this->error("Error fetching images from URL: {$chapter->link}. Error: " . $e->getMessage());
+            return false;
         }
-
+    
         return true;
     }
+    
 
     protected function combineImages($images, $baseDirectory)
     {
         $chunkedImages = array_chunk($images, 2);
 
         foreach ($chunkedImages as $index => $chunk) {
-            $combinedImagePath = $baseDirectory . '/combined-image-' . ($index + 1) . '.webp';
+            $combinedImagePath = $baseDirectory . '/image-' . ($index + 1) . '.webp';
 
             if (count($chunk) == 2) {
                 $image1 = $this->imageManager->read($this->httpClient->get($chunk[0])->getBody()->getContents());
