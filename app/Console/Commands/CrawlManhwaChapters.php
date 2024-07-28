@@ -77,6 +77,12 @@ class CrawlManhwaChapters extends Command
         foreach ($chapters as $chapter) {
             $chapterUrl = $chapter['url'];
             $chapterNumber = $chapter['number'];
+                   // Check if the chapter number is greater than or equal to the starting limit
+                   if (floatval($chapterNumber) < $manhwa->starting_limit) {
+                    $this->info("Skipping chapter {$chapterNumber} from {$source} due to starting limit.");
+                    continue;
+                }
+    
 
             // Check if chapter already exists
             $existingChapter = Chapter::where('manhwa_id', $manhwa->id)
