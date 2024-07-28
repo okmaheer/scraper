@@ -20,7 +20,7 @@ class ManhwaSeeder extends Seeder
         $data = [
             [
                 'name' => 'Dragon-Devouring Mage',
-                'manhwafast_link' => 'https://manhuafast.com/manga/dragon-devouring-mage/',
+                // 'manhwafast_link' => 'https://manhuafast.com/manga/dragon-devouring-mage/',
                 'manhwaclan_link'=> 'https://manhwaclan.com/manga/dragon-devouring-mage/',
                 // 'starting_limit'=> 10,
                 'created_at'=> Carbon::now(),

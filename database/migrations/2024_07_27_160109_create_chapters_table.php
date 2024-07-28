@@ -18,7 +18,9 @@ return new class extends Migration
             $table->foreignId('manhwa_id')->constrained()->onDelete('cascade');
             $table->string('chapter_number')->nullable();
             $table->string('link')->nullable();
+            $table->boolean('processed')->default(false);
             $table->string('source')->nullable();
+            
             $table->timestamps();
         });
     }
