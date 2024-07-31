@@ -64,7 +64,21 @@
                         <input type="text" class="form-control form-control-solid required" placeholder="Enter Fast Link" name="manhwaclan_link" />
 
                     </div>
+
+                    <div class="col-md-6">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span class="required">Tecnoscans Link</span>
+                        </label>
+                        <!--end::Label-->
+                        <input type="text" class="form-control form-control-solid required" placeholder="Enter Fast Link" name="tecnoscans_link" />
+
+                    </div>
                     
+                
+                 
+                </div>
+                <div class="row g-9 mb-8">
                     <div class="col-md-6">
                         <!--begin::Label-->
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
@@ -74,7 +88,6 @@
                         <input type="number" class="form-control form-control-solid required" placeholder="Enter limit" name="starting_limit" />
 
                     </div>
-                 
                 </div>
 
            

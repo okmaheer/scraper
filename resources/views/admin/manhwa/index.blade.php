@@ -52,6 +52,7 @@
                             <th>Name</th>
                             <th>ManhwaFast Link</th>
                             <th>ManhwaClan Link</th>
+                            <th>Tecnoscans Link</th>
                             <th>Starting Limit</th>
 
                         </tr>
@@ -73,6 +74,10 @@
                                     </td>
                                     <td>
                                         {{ $manhwa->manhwaclan_link }}
+ 
+                                    </td>
+                                    <td>
+                                        {{ $manhwa->tecnoscans_link }}
  
                                     </td>
                                     <td>

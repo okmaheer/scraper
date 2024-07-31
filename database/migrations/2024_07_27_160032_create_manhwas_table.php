@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('manhwafast_link')->nullable();
             $table->string('manhwaclan_link')->nullable();
+            $table->string('tecnoscans_link')->nullable();
             $table->integer('starting_limit')->nullable()->default(null);
+            $table->integer('post_id')->nullable();
             $table->timestamps();
         });
     }

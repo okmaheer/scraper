@@ -83,11 +83,12 @@
             ?>
         <?php    
 		// Split the URL into parts
-				preg_match('/https?:\/\/[^\/]+\/wp-content\/uploads\/WP-manga\/data\/manga_[^\/]+\/[^\/]+\/[^\/]+\.[^\/]+$/', $src, $matches);
+		$url_parts = explode('data/', $src);
+
 
 		// Extract the matched part if available
-	        	$cleaned_src = isset($matches[0]) ? $matches[0] : $src;
-				?>
+      		preg_match('/data\/(.+)/', $src, $matches1);
+	     	$cleaned_src = isset($matches1[1]) ? $matches1[1] : null;				?>
             <img id="image-<?php echo esc_attr( $page ); ?>" <?php if($is_lazy_load){ echo 'data-src="'; } else { echo 'src="';}?>
 			
 			<?php echo esc_url($cleaned_src); ?>" class="<?php echo esc_attr( $lazyload ); ?>">

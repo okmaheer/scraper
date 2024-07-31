@@ -13,16 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('chapters', function (Blueprint $table) {
+        Schema::create('chapter_images', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('manhwa_id')->constrained()->onDelete('cascade');
-            $table->string('chapter_number')->nullable();
+            $table->unsignedBigInteger('chapter_id');
             $table->string('link')->nullable();
             $table->boolean('processed')->default(false);
-            $table->integer('wp_chapter_id')->nullable();
-            $table->string('source')->nullable();
-            
             $table->timestamps();
+            $table->foreign('chapter_id')->references('id')->on('chapters')->onDelete('cascade');
+
         });
     }
 
@@ -33,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('chapters');
+        Schema::dropIfExists('chapter_images');
     }
 };
