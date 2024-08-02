@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('crawl:manhwa-chapters')->hourly();
+        $schedule->command('fetch:chapter-images')->hourly();
 
     }
 

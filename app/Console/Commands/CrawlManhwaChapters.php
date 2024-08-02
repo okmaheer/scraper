@@ -7,6 +7,7 @@ use App\Models\Manhwa;
 use App\Models\Chapter;
 use App\Models\WpMangaChapter;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PDO;
 
@@ -25,12 +26,16 @@ class CrawlManhwaChapters extends Command
         $manhwas = Manhwa::all();
 
         foreach ($manhwas as $manhwa) {
+            Log::info("Checking for new chapters for: {$manhwa->name}");
+
             $this->info("Checking for new chapters for: {$manhwa->name}");
 
             // Check Manhuafast
             if (!empty($manhwa->manhwafast_link)) {
                 $this->checkChapters($manhwa, $manhwa->manhwafast_link, 'manhuafast');
             } else {
+                Log::info("No Manhwaclan link for: {$manhwa->name}");
+
                 $this->info("No Manhuafast link for: {$manhwa->name}");
             }
 
@@ -38,14 +43,19 @@ class CrawlManhwaChapters extends Command
             if (!empty($manhwa->manhwaclan_link)) {
                 $this->checkChapters($manhwa, $manhwa->manhwaclan_link, 'manhwaclan');
             } else {
+                Log::info("No Manhwaclan link for: {$manhwa->name}");
+
                 $this->info("No Manhwaclan link for: {$manhwa->name}");
             }
             if (!empty($manhwa->tecnoscans_link)) {
                 $this->checkChapters($manhwa, $manhwa->tecnoscans_link, 'tecnoscans');
             } else {
+                Log::info("No Manhwaclan link for: {$manhwa->name}");
+
                 $this->info("No Manhwaclan link for: {$manhwa->name}");
             }
         }
+        Log::info("Crawling completed.");
 
         $this->info('Crawling completed.');
     }
@@ -55,6 +65,8 @@ class CrawlManhwaChapters extends Command
         
             // Validate the URL
             if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+
+                Log::info("Invalid URL: {$url}");
                 $this->error("Invalid URL: {$url}");
                 return;
             }
@@ -74,6 +86,8 @@ class CrawlManhwaChapters extends Command
             exec("node scripts/{$script} {$url}", $output, $return_var);
     
             if ($return_var !== 0) {
+                Log::info("Failed to fetch chapter links from {$source}.");
+
                 $this->error("Failed to fetch chapter links from {$source}.");
                 return;
             }
@@ -93,6 +107,8 @@ class CrawlManhwaChapters extends Command
             $chapters = json_decode(file_get_contents($jsonFile), true);
     
             if (!$chapters) {
+                Log::info("Failed to decode chapters from {$source}.");
+
                 $this->error("Failed to decode chapters from {$source}.");
                 return;
             }
@@ -144,6 +160,7 @@ class CrawlManhwaChapters extends Command
                   $chapter->wp_chapter_id = $Wpchapter->id;
                   $chapter->save();
                 }
+                Log::info("Added new chapter {$chapterNumber} from {$source}.");
 
                 $this->info("Added new chapter {$chapterNumber} from {$source}.");
 
@@ -151,6 +168,8 @@ class CrawlManhwaChapters extends Command
             }
         }
         } else {
+            Log::info("No new chapters found for {$manhwa->name} ({$source}).");
+
             $this->info("No new chapters found for {$manhwa->name} ({$source}).");
         }
     }
