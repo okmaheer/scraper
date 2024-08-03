@@ -131,7 +131,7 @@ class CrawlManhwaChapters extends Command
                                       ->where('chapter_number', $chapterNumber)
                                       ->first();
 
-            if (!$existingChapter) {
+            if (!$existingChapter && $existingChapter->chaper_number <  $chapterNumber) {
               $chapter=  Chapter::create([
                     'manhwa_id' => $manhwa->id,
                     'chapter_number' => $chapterNumber,
@@ -140,7 +140,7 @@ class CrawlManhwaChapters extends Command
                     'wp_chapter_id'=>null
                 ]);
                 if($manhwa->post_id){
-                    
+
                    $chapterNumberFormatted = str_replace('.', '-', $chapterNumber);
                     $slug = Str::slug("Chapter " . $chapterNumberFormatted);
                     $chapterData = [
