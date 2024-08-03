@@ -9,8 +9,10 @@ const fs = require('fs');
     process.exit(1);
   }
 
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
+  });
+   const page = await browser.newPage();
   await page.goto(url, { waitUntil: 'networkidle2' });
 
   // Extract chapter links and chapter numbers
