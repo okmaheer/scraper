@@ -93,10 +93,10 @@ class CrawlManhwaChapters extends Command
             }
     
             // Determine the correct JSON file based on the source
-            if($source == 'manhuafast'){
-                $jsonFile = 'manhuafast_chapters.json';
-            }else if($source == 'manhwaclan'){
+            if($source == 'manhwaclan'){
                 $jsonFile = 'manhwaclan_chapters.json';
+            }else if($source == 'manhuafast'){
+                $jsonFile = 'manhuafast_chapters.json';
 
             }else {
                 $jsonFile = 'tecnoscans_chapters.json';
