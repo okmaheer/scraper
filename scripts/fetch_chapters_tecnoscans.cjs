@@ -11,8 +11,10 @@ const fs = require('fs');
 
   let browser;
   try {
-    // Launch the browser
-    browser = await puppeteer.launch();
+    // Launch the browser with required arguments
+    browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     const page = await browser.newPage();
 
     // Navigate to the provided URL and wait for the network to be idle
