@@ -130,8 +130,7 @@ class CrawlManhwaChapters extends Command
             $existingChapter = Chapter::where('manhwa_id', $manhwa->id)
                                       ->where('chapter_number', $chapterNumber)
                                       ->first();
-
-            if (!$existingChapter && $existingChapter->chaper_number <  $chapterNumber) {
+            if (!$existingChapter) {
               $chapter=  Chapter::create([
                     'manhwa_id' => $manhwa->id,
                     'chapter_number' => $chapterNumber,

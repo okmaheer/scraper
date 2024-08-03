@@ -5,7 +5,7 @@ async function fetchImages(url) {
     const page = await browser.newPage();
     
     try {
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 }); // Increased timeout to 60 seconds
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 70000 }); // Increased timeout to 60 seconds
     } catch (error) {
         console.error(`Navigation to ${url} timed out or failed: ${error}`);
         await browser.close();
