@@ -30,14 +30,7 @@ class CrawlManhwaChapters extends Command
 
             $this->info("Checking for new chapters for: {$manhwa->name}");
 
-            // Check Manhuafast
-            if (!empty($manhwa->manhwafast_link)) {
-                $this->checkChapters($manhwa, $manhwa->manhwafast_link, 'manhuafast');
-            } else {
-                Log::info("No Manhwaclan link for: {$manhwa->name}");
 
-                $this->info("No Manhuafast link for: {$manhwa->name}");
-            }
 
             // Check Manhwaclan
             if (!empty($manhwa->manhwaclan_link)) {
@@ -47,6 +40,16 @@ class CrawlManhwaChapters extends Command
 
                 $this->info("No Manhwaclan link for: {$manhwa->name}");
             }
+
+                        // Check Manhuafast
+            if (!empty($manhwa->manhwafast_link)) {
+                $this->checkChapters($manhwa, $manhwa->manhwafast_link, 'manhuafast');
+            } else {
+                Log::info("No Manhwaclan link for: {$manhwa->name}");
+
+                $this->info("No Manhuafast link for: {$manhwa->name}");
+            }
+
             if (!empty($manhwa->tecnoscans_link)) {
                 $this->checkChapters($manhwa, $manhwa->tecnoscans_link, 'tecnoscans');
             } else {
@@ -105,7 +108,6 @@ class CrawlManhwaChapters extends Command
     
             // Read the chapter links from the file
             $chapters = json_decode(file_get_contents($jsonFile), true);
-    
             if (!$chapters) {
                 Log::info("Failed to decode chapters from {$source}.");
 
@@ -138,7 +140,7 @@ class CrawlManhwaChapters extends Command
                     'wp_chapter_id'=>null
                 ]);
                 if($manhwa->post_id){
-                    $chapterNumber = '94.5';
+                    
                    $chapterNumberFormatted = str_replace('.', '-', $chapterNumber);
                     $slug = Str::slug("Chapter " . $chapterNumberFormatted);
                     $chapterData = [
