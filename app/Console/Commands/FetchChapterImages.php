@@ -99,6 +99,8 @@ class FetchChapterImages extends Command
                 'storage' => 'local',
                 'data' => json_encode($imageData)
             ]);
+
+            return true;
             
         } catch (\Exception $e) {
             Log::info("Error fetching images from URL: {$chapter->link}. Error: " . $e->getMessage());
@@ -106,7 +108,6 @@ class FetchChapterImages extends Command
             return false;
         }
     
-        return true;
     }protected function fetchImagesWithPuppeteer(array $urls)
     {
         $nodeScript = base_path('scripts/fetchImages.cjs'); // Adjust the path to your Node.js script
