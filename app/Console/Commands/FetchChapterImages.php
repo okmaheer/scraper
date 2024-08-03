@@ -8,6 +8,7 @@ use App\Models\Chapter;
 use App\Models\ChapterImages;
 use App\Models\WpMangaChapterData;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class FetchChapterImages extends Command
 {
@@ -29,12 +30,15 @@ class FetchChapterImages extends Command
         foreach ($chapters as $chapter) {
             $manhwa = Manhwa::find($chapter->manhwa_id);
             if (!$manhwa) {
+                Log::info("Manhwa not found for chapter ID: {$chapter->id}");
+
                 $this->error("Manhwa not found for chapter ID: {$chapter->id}");
                 continue;
             }
 
             $this->info("Fetching images for {$manhwa->name} - Chapter {$chapter->chapter_number}");
-            
+            Log::info("Fetching images for {$manhwa->name} - Chapter {$chapter->chapter_number}");
+
             $success = $this->fetchImages($manhwa, $chapter);
             
             if ($success) {
@@ -42,6 +46,7 @@ class FetchChapterImages extends Command
                 $chapter->save();
             }
         }
+        Log::info("Image fetching completed.");
 
         $this->info('Image fetching completed.');
     }
@@ -65,6 +70,8 @@ class FetchChapterImages extends Command
             }
     
             if (empty($images)) {
+                Log::info("No images found for chapter URL: {$chapter->link}");
+
                 $this->error("No images found for chapter URL: {$chapter->link}");
                 return false;
             }
@@ -81,7 +88,8 @@ class FetchChapterImages extends Command
                     'src' => $image,
                     'mime' => false // Adjust the mime type as needed
                 ];
-            
+                Log::info("{$chapter->chapter_number} are downloaded for image URL: {$image}");
+
                 $this->info("{$chapter->chapter_number} are downloaded for image URL: {$image}");
 
             }
@@ -92,6 +100,7 @@ class FetchChapterImages extends Command
             ]);
             
         } catch (\Exception $e) {
+            Log::info("Error fetching images from URL: {$chapter->link}. Error: " . $e->getMessage());
             $this->error("Error fetching images from URL: {$chapter->link}. Error: " . $e->getMessage());
             return false;
         }
@@ -107,6 +116,7 @@ class FetchChapterImages extends Command
         $images = json_decode($output, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
+            Log::info("Failed to parse images from Puppeteer output. Error: " . json_last_error_msg());
             $this->error("Failed to parse images from Puppeteer output. Error: " . json_last_error_msg());
             return [];
         }
