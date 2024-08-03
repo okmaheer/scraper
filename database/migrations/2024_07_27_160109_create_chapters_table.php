@@ -17,11 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('manhwa_id')->constrained()->onDelete('cascade');
             $table->string('chapter_number')->nullable();
-            $table->string('link')->nullable();
+            $table->text('link')->nullable();
             $table->boolean('processed')->default(false);
             $table->integer('wp_chapter_id')->nullable();
             $table->string('source')->nullable();
-            
             $table->timestamps();
         });
     }

@@ -54,9 +54,10 @@ class FetchChapterImages extends Command
     protected function fetchImages($manhwa, $chapter)
     {
         try {
+            if($chapter->source !== 'tecnoscans'){
             $htmlContent = $this->httpClient->get($chapter->link)->getBody()->getContents();
             $crawler = new \Symfony\Component\DomCrawler\Crawler($htmlContent);
-             
+            }
             if($chapter->source == 'manhuafast'){
                 $images = $crawler->filter('.reading-content .page-break img')->each(function ($node) {
                     return trim($node->attr('data-src'));
@@ -66,7 +67,7 @@ class FetchChapterImages extends Command
                     return trim($node->attr('src'));
                 });
             } else if($chapter->source == 'tecnoscans') {
-                $images = $this->fetchImagesWithPuppeteer($chapter->link);
+                $images = $this->fetchImagesWithPuppeteer(json_decode($chapter->link));
             }
     
             if (empty($images)) {
@@ -106,21 +107,21 @@ class FetchChapterImages extends Command
         }
     
         return true;
-    }
-    protected function fetchImagesWithPuppeteer($url)
+    }protected function fetchImagesWithPuppeteer(array $urls)
     {
         $nodeScript = base_path('scripts/fetchImages.cjs'); // Adjust the path to your Node.js script
-
-        $command = "node $nodeScript " . escapeshellarg($url);
+        $urlsArg = escapeshellarg(base64_encode(json_encode($urls)));
+    
+        $command = "node $nodeScript $urlsArg";
         $output = shell_exec($command);
         $images = json_decode($output, true);
-
+    
         if (json_last_error() !== JSON_ERROR_NONE) {
             Log::info("Failed to parse images from Puppeteer output. Error: " . json_last_error_msg());
             $this->error("Failed to parse images from Puppeteer output. Error: " . json_last_error_msg());
             return [];
         }
-
+    
         return $images;
     }
 }
