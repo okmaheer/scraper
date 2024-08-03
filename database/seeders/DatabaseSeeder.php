@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             ModuleSeeder::class,
             PermissionSeeder::class,
             UserSeeder::class,
-            ManhwaSeeder::class,
+            // ManhwaSeeder::class,
 
         ]);
     }
