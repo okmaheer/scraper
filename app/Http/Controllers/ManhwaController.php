@@ -63,7 +63,7 @@ class ManhwaController extends Controller
         ]);
     
         // Update the post with the correct guid
-        $post->guid = "http://wordpress.test/?post_type=wp-manga;p=" . $post->id;
+        $post->guid = "https://manhwacollection.com/?post_type=wp-manga;p=" . $post->id;
         $post->save();
     
         $manhwa->post_id = $post->id;
