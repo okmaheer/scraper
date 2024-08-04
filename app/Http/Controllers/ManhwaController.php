@@ -217,6 +217,13 @@ class ManhwaController extends Controller
         "post_id" => $post->id,
         "meta_key" => "_manga_total_votes",
         "meta_value" => 1,
+      ],
+      [
+        "post_id" => $post->id,
+        "meta_key" => "_wp_manga_chapters_warning",
+        "meta_value" => "<strong>Get daily updates and  Fasted uploads for  Manhwa and Manhua  with the best quality on Manhwa Collection (manhwacollection.com).</strong>
+
+&nbsp;",
       ]
     ];
 
