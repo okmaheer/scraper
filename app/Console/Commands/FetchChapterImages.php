@@ -57,6 +57,8 @@ class FetchChapterImages extends Command
             if($chapter->source !== 'tecnoscans'){
             $htmlContent = $this->httpClient->get($chapter->link)->getBody()->getContents();
             $crawler = new \Symfony\Component\DomCrawler\Crawler($htmlContent);
+            }else{
+                return false;
             }
             if($chapter->source == 'manhuafast'){
                 $images = $crawler->filter('.reading-content .page-break img')->each(function ($node) {
@@ -67,7 +69,7 @@ class FetchChapterImages extends Command
                     return trim($node->attr('src'));
                 });
             } else if($chapter->source == 'tecnoscans') {
-                $images = $this->fetchImagesWithPuppeteer(json_decode($chapter->link));
+                // $images = $this->fetchImagesWithPuppeteer(json_decode($chapter->link));
             }
     
             if (empty($images)) {

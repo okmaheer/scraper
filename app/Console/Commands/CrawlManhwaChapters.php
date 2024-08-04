@@ -50,13 +50,13 @@ class CrawlManhwaChapters extends Command
                 $this->info("No Manhuafast link for: {$manhwa->name}");
             }
 
-            if (!empty($manhwa->tecnoscans_link)) {
-                $this->checkChapters($manhwa, $manhwa->tecnoscans_link, 'tecnoscans');
-            } else {
-                Log::info("No Manhwaclan link for: {$manhwa->name}");
+            // if (!empty($manhwa->tecnoscans_link)) {
+            //     // $this->checkChapters($manhwa, $manhwa->tecnoscans_link, 'tecnoscans');
+            // } else {
+            //     Log::info("No Manhwaclan link for: {$manhwa->name}");
 
-                $this->info("No Manhwaclan link for: {$manhwa->name}");
-            }
+            //     $this->info("No Manhwaclan link for: {$manhwa->name}");
+            // }
         }
         Log::info("Crawling completed.");
 
