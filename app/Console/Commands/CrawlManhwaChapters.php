@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 use App\Models\Manhwa;
 use App\Models\Chapter;
 use App\Models\WpMangaChapter;
+use App\Models\WpPostMeta;
+use App\Models\WpPosts;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -139,7 +141,9 @@ class CrawlManhwaChapters extends Command
                             'wp_chapter_id' => null
                         ]);
                         if ($manhwa->post_id) {
-
+                            WpPostMeta::where('post_id',$manhwa->post_id)->where('meta_key', '_latest_update')->update([
+                                'meta_value' => Carbon::now()->timestamp
+                            ]);
                             $chapterNumberFormatted = str_replace('.', '-', $chapterNumber);
                             $slug = Str::slug("Chapter " . $chapterNumberFormatted);
                             $chapterData = [
