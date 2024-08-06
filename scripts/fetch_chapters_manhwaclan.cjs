@@ -35,6 +35,7 @@ const puppeteer = require('puppeteer');
         process.exit(1);  
     }
   }
+  }
 
   // Extract chapter links and chapter numbers from manhwaclan.com
   const chapters = await page.evaluate(() => {
