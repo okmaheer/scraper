@@ -78,7 +78,7 @@ class CrawlManhwaChapters extends Command
             $script = 'fetch_chapters_tecnoscans.cjs';
         }
         // Log the command being executed
-        $command = "node ../home/scraper/htdocs/scraper.manhwacollection.com/scripts/{$script} {$url} 2>&1";
+        $command = "node scripts/{$script} {$url} 2>&1";
         Log::info("Executing command: {$command}");
 
         // Execute the command and capture output
