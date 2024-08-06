@@ -29,8 +29,10 @@ const puppeteer = require('puppeteer');
     } catch (error) {
       retries++;
       console.error(`Navigation attempt ${retries} failed. Retrying...`);
+      console.error(error);  // Log the error details
       if (retries >= maxRetries) {
-        throw new Error(`Failed to navigate to ${url} after ${maxRetries} attempts`);
+        console.error(`Failed to navigate to ${url} after ${maxRetries} attempts`);
+        process.exit(1);  // Exit the script with an error code
       }
     }
   }
