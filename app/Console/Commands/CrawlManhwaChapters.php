@@ -70,7 +70,6 @@ class CrawlManhwaChapters extends Command
 
         // Validate the URL
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-
             Log::info("Invalid URL: {$url}");
             $this->error("Invalid URL: {$url}");
             return;
@@ -85,13 +84,20 @@ class CrawlManhwaChapters extends Command
             $script = 'fetch_chapters_tecnoscans.cjs';
         }
 
-        // Run the Puppeteer script to fetch chapter links
-        exec("node scripts/{$script} {$url}", $output, $return_var);
+        // Log the command being executed
+        $command = "node scripts/{$script} {$url}";
+        Log::info("Executing command: {$command}");
+
+        // Execute the command and capture output
+        exec($command . ' 2>&1', $output, $return_var);
+
+        // Log the output and return code
+        Log::info("Command output: " . implode("\n", $output));
+        Log::info("Command return code: {$return_var}");
 
         if ($return_var !== 0) {
-            Log::info("Failed to fetch chapter links from {$source}.");
-
-            $this->error("Failed to fetch chapter links from {$source}.");
+            Log::error("Failed to fetch chapter links from {$source}. Error: " . implode("\n", $output));
+            $this->error("Failed to fetch chapter links from {$source}. Error: " . implode("\n", $output));
             return;
         }
 
@@ -107,9 +113,8 @@ class CrawlManhwaChapters extends Command
         // Read the chapter links from the file
         $chapters = json_decode(file_get_contents($jsonFile), true);
         if (!$chapters) {
-            Log::info("Failed to decode chapters from {$source}.");
-
-            $this->error("Failed to decode chapters from {$source}.");
+            Log::error("Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
+            $this->error("Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
             return;
         }
 
@@ -141,7 +146,7 @@ class CrawlManhwaChapters extends Command
                             'wp_chapter_id' => null
                         ]);
                         if ($manhwa->post_id) {
-                            WpPostMeta::where('post_id',$manhwa->post_id)->where('meta_key', '_latest_update')->update([
+                            WpPostMeta::where('post_id', $manhwa->post_id)->where('meta_key', '_latest_update')->update([
                                 'meta_value' => Carbon::now()->timestamp
                             ]);
                             $chapterNumberFormatted = str_replace('.', '-', $chapterNumber);
@@ -181,43 +186,42 @@ class CrawlManhwaChapters extends Command
     public function mergeChapters($manhwa, $chapters, $source)
     {
         $mergedChapters = [];
-    
+
         foreach ($chapters as $chapter) {
             $chapterUrl = $chapter['url'];
             $chapterNumber = $chapter['number'];
             $baseChapterNumber = (int)floor($chapterNumber);
-    
+
             // Skip chapters below the starting limit
             if (floatval($chapterNumber) < $manhwa->starting_limit) {
                 $this->info("Skipping chapter {$chapterNumber} from {$source} due to starting limit.");
                 continue;
             }
-    
+
             // Merge URLs by base chapter number
             if (!isset($mergedChapters[$baseChapterNumber])) {
                 $mergedChapters[$baseChapterNumber] = [
                     'number' => $baseChapterNumber,
                     'url' => []
                 ];
-
             }
-    
+
             $mergedChapters[$baseChapterNumber]['url'][] = $chapterUrl;
         }
-    
+
         // Process merged chapters
         foreach ($mergedChapters as $chapter) {
             $chapter['url'] = json_encode($chapter['url']);
             $this->info("Processing chapter {$chapter['number']} from {$source}.");
-    
+
             $existingChapter = Chapter::where('manhwa_id', $manhwa->id)
                 ->where('chapter_number', $chapter['number'])
                 ->first();
-    
+
             if (!$existingChapter) {
                 Log::info("Adding new chapter {$chapter['number']} from {$source}.");
-    
-              $newchapter =  Chapter::create([
+
+                $newchapter =  Chapter::create([
                     'manhwa_id' => $manhwa->id,
                     'chapter_number' => $chapter['number'],
                     'link' => $chapter['url'],
@@ -252,5 +256,4 @@ class CrawlManhwaChapters extends Command
             }
         }
     }
-    
 }
