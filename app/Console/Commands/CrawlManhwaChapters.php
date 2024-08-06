@@ -89,17 +89,17 @@ class CrawlManhwaChapters extends Command
         Log::info("Executing command: {$command}");
 
         // Execute the command and capture output
-        exec($command . ' 2>&1', $output, $return_var);
+        shell_exec($command);
 
-        // Log the output and return code
-        Log::info("Command output: " . implode("\n", $output));
-        Log::info("Command return code: {$return_var}");
+        // // Log the output and return code
+        // Log::info("Command output: " . implode("\n", $output));
+        // Log::info("Command return code: {$return_var}");
 
-        if ($return_var !== 0) {
-            Log::error("Failed to fetch chapter links from {$source}. Error: " . implode("\n", $output));
-            $this->error("Failed to fetch chapter links from {$source}. Error: " . implode("\n", $output));
-            return;
-        }
+        // if ($return_var !== 0) {
+        //     Log::error("Failed to fetch chapter links from {$source}. Error: " . implode("\n", $output));
+        //     $this->error("Failed to fetch chapter links from {$source}. Error: " . implode("\n", $output));
+        //     return;
+        // }
 
         // Determine the correct JSON file based on the source
         if ($source == 'manhwaclan') {
