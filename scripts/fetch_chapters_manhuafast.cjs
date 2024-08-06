@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs');
 
 (async () => {
   const url = process.argv[2];
@@ -13,27 +12,29 @@ const fs = require('fs');
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
   const page = await browser.newPage();
-    // Increase navigation timeout to 60 seconds
-    const navigationTimeout = 60000;
+  
+  // Increase navigation timeout to 60 seconds
+  const navigationTimeout = 60000;
+  
+  // Retry mechanism for navigation
+  const maxRetries = 3;
+  let retries = 0;
+  let success = false;
 
-    // Retry mechanism for navigation
-    const maxRetries = 3;
-    let retries = 0;
-    let success = false;
-
-    while (retries < maxRetries && !success) {
-      try {
-        // Navigate to the provided URL and wait for the network to be idle
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: navigationTimeout });
-        success = true;
-      } catch (error) {
-        retries++;
-        console.error(`Navigation attempt ${retries} failed. Retrying...`);
-        if (retries >= maxRetries) {
-          throw new Error(`Failed to navigate to ${url} after ${maxRetries} attempts`);
-        }
+  while (retries < maxRetries && !success) {
+    try {
+      // Navigate to the provided URL and wait for the network to be idle
+      await page.goto(url, { waitUntil: 'networkidle2', timeout: navigationTimeout });
+      success = true;
+    } catch (error) {
+      retries++;
+      console.error(`Navigation attempt ${retries} failed. Retrying...`);
+      if (retries >= maxRetries) {
+        throw new Error(`Failed to navigate to ${url} after ${maxRetries} attempts`);
       }
     }
+  }
+
   // Extract chapter links and chapter numbers from manhuafast.com
   const chapters = await page.evaluate(() => {
     const links = Array.from(document.querySelectorAll('.listing-chapters_wrap .wp-manga-chapter a'));
@@ -47,8 +48,8 @@ const fs = require('fs');
     }).filter(chapter => chapter.number !== null); // Filter out invalid chapters
   });
 
-  // Save chapter links and numbers to a file
-  fs.writeFileSync('manhuafast_chapters.json', JSON.stringify(chapters, null, 2));
-
   await browser.close();
+
+  // Return the chapters data
+  process.stdout.write(JSON.stringify(chapters));
 })();
