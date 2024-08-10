@@ -183,6 +183,7 @@
                         </div>
                     </div>
                 </div>
+            
                 <div class="menu menu-column menu-rounded fw-bold fs-6" id="#patients_menu" data-kt-menu="true">
                     <div data-kt-menu-trigger="click" class="menu-item here menu-accordion">
                         <span class="menu-link">

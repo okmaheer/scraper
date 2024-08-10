@@ -16,7 +16,7 @@ class ManhwaController extends Controller
 
   public function index(Request $request)
   {
-    $manhwas = Manhwa::withCount('chapters')->get();
+    $manhwas = Manhwa::withCount('chapters')->orderBy('created_at', 'ASC')->get();
     return view('admin.manhwa.index', compact('manhwas'));
   }
 

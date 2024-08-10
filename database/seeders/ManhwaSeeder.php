@@ -20,9 +20,9 @@ class ManhwaSeeder extends Seeder
         $data = [
             [
                 'name' => 'Absolute Sword Sense',
-                'manhwafast_link' => 'https://manhuafast.com/manga/dragon-devouring-mage/',
+                // 'manhwafast_link' => 'https://manhuafast.com/manga/dragon-devouring-mage/',
                 // 'manhwaclan_link'=> 'https://manhwaclan.com/manga/dragon-devouring-mage/',
-                'tecnoscans_link'=> 'https://tecnoscans.xyz/manga/absolute-sword-sense/',
+                'tecnoscans_link'=> 'https://olyscans.xyz/manga/absolute-sword-sense/',
                 // 'starting_limit'=> 10,
                 'created_at'=> Carbon::now(),
                 'updated_at'=> Carbon::now(),

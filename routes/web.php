@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ManhwaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLoginController;
+use App\Models\Chapter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -77,6 +79,14 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/manhwa/delete/{id}', 'delete')->name('manhwa.delete');
 
         });
+        Route::controller(ChapterController::class)->group(function () {
+            Route::get('/manhwa/chapter/index/{id}', 'index')->name('chapter.index');
+            Route::get('manhwa/chapter/delete/{id}', 'delete')->name('chapter.delete');
+            Route::get('/manhwa/chapter/chapter-images/index/{id}', 'listChapterImages')->name('chapter-images.index');
+            Route::get('manhwa/chapter/chapter-images/delete/{id}', 'deleteChapterImages')->name('chapter-images.delete');
+
+        });
+
 
         Route::controller(UserController::class)->group(function () {
             Route::get('user/index', 'index')->name('user.index');

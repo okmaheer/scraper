@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Chapter;
+use App\Models\ChapterImages;
+use App\Models\WpMangaChapter;
+use App\Models\WpMangaChapterData;
+use Illuminate\Http\Request;
+
+class ChapterController extends Controller
+{
+
+    public function index(Request $request,$id){
+        $chapters = Chapter::where('manhwa_id',$id)->with('manhwa')->orderBy('created_at', 'ASC')->get();
+        return view('admin.chapter.index', compact('chapters'));
+    }
+
+    public function delete(Request $request,$id){
+        $chapter = Chapter::find($id);
+        $WpchapterData =WpMangaChapterData::where('chapter_id',$chapter->wp_chapter_id)->delete();
+        $Wpchapter =WpMangaChapter::where('chapter_id',$chapter->wp_chapter_id)->delete();
+        $chapterImages = ChapterImages::where('chapter_id',$chapter->id)->delete();
+        $chapter->delete();
+        redirect()->back();
+        
+    }
+
+    public function listChapterImages(Request $request,$id){
+        $chapterImages = ChapterImages::where('chapter_id',$id)->with('chapter')->orderBy('created_at', 'ASC')->get();
+        return view('admin.chapter-images.index', compact('chapterImages'));
+    }
+
+    public function deleteChapterImages(Request $request,$id){
+        $chapterImages = ChapterImages::where('chapter_id',$id)->with('chapter')->orderBy('created_at', 'ASC')->get();
+        return view('admin.chapter-images.index', compact('chapterImages'));
+    }
+
+
+}
