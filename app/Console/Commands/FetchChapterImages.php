@@ -57,8 +57,6 @@ class FetchChapterImages extends Command
             if($chapter->source !== 'tecnoscans'){
             $htmlContent = $this->httpClient->get($chapter->link)->getBody()->getContents();
             $crawler = new \Symfony\Component\DomCrawler\Crawler($htmlContent);
-            }else{
-                return false;
             }
             if($chapter->source == 'manhuafast'){
                 $images = $crawler->filter('.reading-content .page-break img')->each(function ($node) {
@@ -69,7 +67,7 @@ class FetchChapterImages extends Command
                     return trim($node->attr('src'));
                 });
             } else if($chapter->source == 'tecnoscans') {
-                // $images = $this->fetchImagesWithPuppeteer(json_decode($chapter->link));
+                $images = $this->fetchImagesWithPuppeteer(array_reverse(json_decode($chapter->link)));
             }
     
             if (empty($images)) {
@@ -96,7 +94,7 @@ class FetchChapterImages extends Command
                 $this->info("{$chapter->chapter_number} are downloaded for image URL: {$image}");
 
             }
-            WpMangaChapterData::create([
+         $chapre =   WpMangaChapterData::create([
                 'chapter_id' => $chapter->wp_chapter_id, // Use the appropriate chapter_id
                 'storage' => 'local',
                 'data' => json_encode($imageData)
@@ -114,7 +112,6 @@ class FetchChapterImages extends Command
     {
         $nodeScript = base_path('scripts/fetchImages.cjs'); // Adjust the path to your Node.js script
         $urlsArg = escapeshellarg(base64_encode(json_encode($urls)));
-    
         $command = "node $nodeScript $urlsArg";
         $output = shell_exec($command);
         $images = json_decode($output, true);

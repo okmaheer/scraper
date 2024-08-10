@@ -47,13 +47,13 @@ class CrawlManhwaChapters extends Command
             }
 
 
-            // if (!empty($manhwa->tecnoscans_link)) {
-            //     // $this->checkChapters($manhwa, $manhwa->tecnoscans_link, 'tecnoscans');
-            // } else {
-            //     Log::info("No Manhwaclan link for: {$manhwa->name}");
+            if (!empty($manhwa->tecnoscans_link)) {
+                $this->checkChapters($manhwa, $manhwa->tecnoscans_link, 'tecnoscans');
+            } else {
+                Log::info("No Manhwaclan link for: {$manhwa->name}");
 
-            //     $this->info("No Manhwaclan link for: {$manhwa->name}");
-            // }
+                $this->info("No Manhwaclan link for: {$manhwa->name}");
+            }
         }
 
         Log::info("Crawling completed.");
@@ -196,8 +196,7 @@ class CrawlManhwaChapters extends Command
             $existingChapter = Chapter::where('manhwa_id', $manhwa->id)
                 ->where('chapter_number', $chapter['number'])
                 ->first();
-
-            if (!$existingChapter) {
+                if (!$existingChapter) {
                 Log::info("Adding new chapter {$chapter['number']} from {$source}.");
                 $newchapter = Chapter::create([
                     'manhwa_id' => $manhwa->id,

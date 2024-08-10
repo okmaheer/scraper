@@ -1,5 +1,4 @@
 const puppeteer = require('puppeteer');
-const fs = require('fs');
 
 (async () => {
   const url = process.argv[2];
@@ -52,10 +51,9 @@ const fs = require('fs');
       }).filter(chapter => chapter.number !== null); // Filter out invalid chapters
     });
 
-    // Save chapter links and numbers to a file
-    fs.writeFileSync('tecnoscans_chapters.json', JSON.stringify(chapters, null, 2));
+    // Send the chapter data back as JSON
+    process.stdout.write(JSON.stringify(chapters, null, 2));
 
-    console.log('Chapters data saved successfully.');
   } catch (error) {
     console.error('Error:', error);
   } finally {
