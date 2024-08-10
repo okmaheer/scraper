@@ -42,19 +42,16 @@ class Helper
    public static function checkImageUrl($url)
     {
         try {
-            $response = Http::head($url);
-            if ($response->status() !== 200) {
-                return false; // Image does not exist
+            $headers = @get_headers($url);
+
+            if ($headers && strpos($headers[0], '200')) {
+                return true; // Image exists and is valid
+
+            }else{
+                return false;
             }
-    
-            // Optionally check if the image is not corrupted
-            $imageCheck = @imagecreatefromstring(file_get_contents($url));
-            if ($imageCheck === false) {
-                return false; // Image is corrupted
-            }
-    
-            return true;
         } catch (\Exception $e) {
+            // \Log::error("Error checking image URL: {$url} - " . $e->getMessage());
             return false; // Any error indicates the image is not valid
         }
     }
