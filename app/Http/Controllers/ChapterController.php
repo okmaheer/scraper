@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chapter;
 use App\Models\ChapterImages;
+use App\Models\Manhwa;
 use App\Models\WpMangaChapter;
 use App\Models\WpMangaChapterData;
 use Illuminate\Http\Request;
@@ -17,13 +18,28 @@ class ChapterController extends Controller
     }
 
     public function delete(Request $request,$id){
-        $chapter = Chapter::find($id);
+        $chapter = Chapter::first($id);
         $WpchapterData =WpMangaChapterData::where('chapter_id',$chapter->wp_chapter_id)->delete();
         $Wpchapter =WpMangaChapter::where('chapter_id',$chapter->wp_chapter_id)->delete();
         $chapterImages = ChapterImages::where('chapter_id',$chapter->id)->delete();
         $chapter->delete();
-        redirect()->back();
+        return redirect()->back();
         
+    }
+    public function deleteBulk(Request $request,$id){
+       $manhwa = Manhwa::where('id',$id)->first();
+        $chapters =  Chapter::where('manhwa_id',$manhwa->id)->get();
+        foreach($chapters as $chapter){
+            $WpchapterData = WpMangaChapterData::where('chapter_id',$chapter->wp_chapter_id)->delete();
+            $Wpchapter = WpMangaChapter::where('chapter_id',$chapter->wp_chapter_id)->delete();
+            $chapterImages = ChapterImages::where('chapter_id',$chapter->id)->delete();
+
+        }
+
+          Chapter::where('manhwa_id',$manhwa->id)->delete();
+
+          return redirect()->back();
+
     }
 
     public function listChapterImages(Request $request,$id){

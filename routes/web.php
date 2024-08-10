@@ -78,10 +78,13 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/manhwa/update/', 'update')->name('manhwa.update');
             Route::get('/manhwa/delete/{id}', 'delete')->name('manhwa.delete');
 
+
         });
         Route::controller(ChapterController::class)->group(function () {
             Route::get('/manhwa/chapter/index/{id}', 'index')->name('chapter.index');
             Route::get('manhwa/chapter/delete/{id}', 'delete')->name('chapter.delete');
+            Route::get('/manhwa/chapter/bulk/{id}', 'deletebulk')->name('chapter.delete.bulk');
+
             Route::get('/manhwa/chapter/chapter-images/index/{id}', 'listChapterImages')->name('chapter-images.index');
             Route::get('manhwa/chapter/chapter-images/delete/{id}', 'deleteChapterImages')->name('chapter-images.delete');
 

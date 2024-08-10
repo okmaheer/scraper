@@ -25,8 +25,8 @@
         <!--begin::Actions-->
         <div class="d-flex align-items-center py-2 py-md-1">
             <!--begin::Button-->
-            <a href="" class="btn btn-dark fw-bolder"
-                id="kt_toolbar_primary_button">Create</a>
+            <a href="{{route('admin.chapter.delete.bulk',[request()->id])}}" class="btn btn-dark fw-bolder"
+                id="kt_toolbar_primary_button">Delete All</a>
             <!--end::Button-->
         </div>
         <!--end::Actions-->
