@@ -68,6 +68,11 @@
                                         {{ $images->chapter->chapter_number }}
  
                                     </td>
+                                    
+                                    <td>
+                                        {{ $images->link }}
+ 
+                                    </td>
                                     <td>
                                         @if(App\Helper\Helper::checkImageUrl($images->link))
                                         <span class="badge badge-success">Image Exists</span>
