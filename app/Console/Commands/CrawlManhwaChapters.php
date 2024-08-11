@@ -214,8 +214,11 @@ class CrawlManhwaChapters extends Command
                 ]);
 
                 if ($manhwa->post_id) {
-                    $chapterNumberFormatted = str_replace('.', '-', $chapter['number']);
-                    $slug = Str::slug("Chapter " . $chapterNumberFormatted);
+                    WpPostMeta::where('post_id', $manhwa->post_id)->where('meta_key', '_latest_update')->update([
+                        'meta_value' => Carbon::now()->timestamp
+                    ]);
+                    $chapterNumberFormatted = str_replace('.', '-', $chapterNumber);
+                        $slug = Str::slug("Chapter " . $chapterNumberFormatted);
                     $chapterData = [
                         "post_id" => $manhwa->post_id,
                         "volume_id" => 0,
