@@ -53,6 +53,8 @@
                             <th>ManhwaFast Link</th>
                             <th>ManhwaClan Link</th>
                             <th>Tecnoscans Link</th>
+                            <th>Mgdemon Link</th>
+                            <th>Flamecomics Link</th>
                             <th>Starting Limit</th>
 
                         </tr>
@@ -78,6 +80,14 @@
                                     </td>
                                     <td>
                                         {{ $manhwa->tecnoscans_link }}
+ 
+                                    </td>
+                                    <td>
+                                        {{ $manhwa->mgdemon_link }}
+ 
+                                    </td>
+                                    <td>
+                                        {{ $manhwa->flamecomics_link }}
  
                                     </td>
                                     <td>

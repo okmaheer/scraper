@@ -23,6 +23,8 @@ class ManhwaSeeder extends Seeder
                 // 'manhwafast_link' => 'https://manhuafast.com/manga/dragon-devouring-mage/',
                 // 'manhwaclan_link'=> 'https://manhwaclan.com/manga/dragon-devouring-mage/',
                 'tecnoscans_link'=> 'https://olyscans.xyz/manga/absolute-sword-sense/',
+                // 'mgdemon_link'=> 'https://mgdemon.org/manga/Academy%2527s-Genius-Swordsman-VA54',
+                // 'flamecomics_link'=>'',
                 // 'starting_limit'=> 10,
                 'created_at'=> Carbon::now(),
                 'updated_at'=> Carbon::now(),

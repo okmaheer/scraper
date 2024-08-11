@@ -58,6 +58,7 @@ class FetchChapterImages extends Command
             $htmlContent = $this->httpClient->get($chapter->link)->getBody()->getContents();
             $crawler = new \Symfony\Component\DomCrawler\Crawler($htmlContent);
             }
+
             if($chapter->source == 'manhuafast'){
                 $images = $crawler->filter('.reading-content .page-break img')->each(function ($node) {
                     return trim($node->attr('data-src'));
@@ -66,16 +67,22 @@ class FetchChapterImages extends Command
                 $images = $crawler->filter('.reading-content img.wp-manga-chapter-img')->each(function ($node) {
                     return trim($node->attr('src'));
                 });
-            } else if($chapter->source == 'tecnoscans') {
+            } 
+            else if($chapter->source == 'mgdemon') {
+                $images = $crawler->filter('img.imgholder')->each(function ($node) {
+                    return trim($node->attr('src'));
+                });
+            }
+            else if($chapter->source == 'tecnoscans') {
                 $images = $this->fetchImagesWithPuppeteer(array_reverse(json_decode($chapter->link)));
             }
-    
             if (empty($images)) {
                 Log::info("No images found for chapter URL: {$chapter->link}");
 
                 $this->error("No images found for chapter URL: {$chapter->link}");
                 return false;
             }
+
             $imageData = [];
 
             foreach ($images as $index => $image){
@@ -94,13 +101,19 @@ class FetchChapterImages extends Command
                 $this->info("{$chapter->chapter_number} are downloaded for image URL: {$image}");
 
             }
-         $chapre =   WpMangaChapterData::create([
-                'chapter_id' => $chapter->wp_chapter_id, // Use the appropriate chapter_id
-                'storage' => 'local',
-                'data' => json_encode($imageData)
-            ]);
+            if($chapter->wp_chapter_id){
+                WpMangaChapterData::create([
+                    'chapter_id' => $chapter->wp_chapter_id, // Use the appropriate chapter_id
+                    'storage' => 'local',
+                    'data' => json_encode($imageData)
+                ]);
 
-            return true;
+
+                return true;
+            } else {
+                return false;
+            }
+         
             
         } catch (\Exception $e) {
             Log::info("Error fetching images from URL: {$chapter->link}. Error: " . $e->getMessage());
@@ -108,7 +121,8 @@ class FetchChapterImages extends Command
             return false;
         }
     
-    }protected function fetchImagesWithPuppeteer(array $urls)
+    }
+    protected function fetchImagesWithPuppeteer(array $urls)
     {
         $nodeScript = base_path('scripts/fetchImages.cjs'); // Adjust the path to your Node.js script
         $urlsArg = escapeshellarg(base64_encode(json_encode($urls)));

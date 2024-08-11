@@ -18,7 +18,7 @@ class ChapterController extends Controller
     }
 
     public function delete(Request $request,$id){
-        $chapter = Chapter::first($id);
+        $chapter = Chapter::where('id',$id)->first();
         $WpchapterData =WpMangaChapterData::where('chapter_id',$chapter->wp_chapter_id)->delete();
         $Wpchapter =WpMangaChapter::where('chapter_id',$chapter->wp_chapter_id)->delete();
         $chapterImages = ChapterImages::where('chapter_id',$chapter->id)->delete();

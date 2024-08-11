@@ -37,7 +37,13 @@ class CrawlManhwaChapters extends Command
                 Log::info("No Manhwaclan link for: {$manhwa->name}");
                 $this->info("No Manhwaclan link for: {$manhwa->name}");
             }
-
+               // Check Manhuafast
+               if (!empty($manhwa->mgdemon_link)) {
+                $this->checkChapters($manhwa, $manhwa->mgdemon_link, 'mgdemon');
+            } else {
+                Log::info("No MGdemon link for: {$manhwa->name}");
+                $this->info("No MGdemon link for: {$manhwa->name}");
+            }
             // Check Manhuafast
             if (!empty($manhwa->manhwafast_link)) {
                 $this->checkChapters($manhwa, $manhwa->manhwafast_link, 'manhuafast');
@@ -74,7 +80,10 @@ class CrawlManhwaChapters extends Command
             $script = 'fetch_chapters_manhuafast.cjs';
         } else if ($source == 'manhwaclan') {
             $script = 'fetch_chapters_manhwaclan.cjs';
-        } else {
+        } else if($source == 'mgdemon') {
+            $script = 'fetch_chapters_mgdemon.cjs';
+            }
+        else {
             $script = 'fetch_chapters_tecnoscans.cjs';
         }
         // Log the command being executed
@@ -99,7 +108,6 @@ class CrawlManhwaChapters extends Command
             $this->error($output);  // Show the raw output for debugging
             return;
         }
-
 
         if (count($chapters) !== Chapter::where('manhwa_id', $manhwa->id)->count()) {
             if ($source == 'tecnoscans') {

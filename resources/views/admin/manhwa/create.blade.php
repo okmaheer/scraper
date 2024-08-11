@@ -58,6 +58,30 @@
                     <div class="col-md-6">
                         <!--begin::Label-->
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span class="required">MG Demon Link</span>
+                        </label>
+                        <!--end::Label-->
+                        <input type="text" class="form-control form-control-solid required" value=""  placeholder="Enter MG Link" name="mgdemon_link" />
+
+                    </div>
+                    <div class="col-md-6">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span class="required">Flame Comics Clan Link</span>
+                        </label>
+                        <!--end::Label-->
+                        <input type="text" class="form-control form-control-solid required" value=""  placeholder="Enter Flame Link" name="flamecomics_link" />
+
+                    </div>
+               
+                 
+                </div>
+                <div class="row g-9 mb-8">
+            
+                 
+                    <div class="col-md-6">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
                             <span class="required">Manhwa Clan Link</span>
                         </label>
                         <!--end::Label-->
