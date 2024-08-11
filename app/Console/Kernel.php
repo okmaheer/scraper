@@ -16,9 +16,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('chapter:check-delete')->hourly();
-        // $schedule->command('crawl:manhwa-chapters')->everyFiveMinutes();
-        // $schedule->command('fetch:chapter-images')->everyTenMinutes();
+        $schedule->command('chapter:check-delete')->withoutOverlapping()->everyMinute();
+        // $schedule->command('crawl:manhwa-chapters')->withoutOverlapping()->everyFiveMinutes();
+        // $schedule->command('fetch:chapter-images')->withoutOverlapping()->everyTenMinutes();
 
 
     }

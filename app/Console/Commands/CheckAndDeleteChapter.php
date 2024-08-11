@@ -25,13 +25,13 @@ class CheckAndDeleteChapter extends Command
     public function handle()
     {
         // Fetch all chapters
-        $chapters = Chapter::with('chapterImages')->get();
+        $chapters = Chapter::where('source','manhuafast')->with('chapterImages')->get();
 
         foreach ($chapters as $chapter) {
             $deleteChapter = false;
-            Log::info("checking chapter " . $chapter->chapter_number . " " . $chapter->source . " " . $chapter->manhwa->name);
+            Log::info("checking chapter  for corrupted Images " . $chapter->chapter_number . " " . $chapter->source . " " . $chapter->manhwa->name);
 
-            $this->info("checking chapter " . $chapter->chapter_number . " " . $chapter->source . " " . $chapter->manhwa->name);
+            $this->info("checking chapter for corrupted images " . $chapter->chapter_number . " " . $chapter->source . " " . $chapter->manhwa->name);
             
             // Check each image for the chapter
             foreach ($chapter->chapterImages as $chapterImage) {
