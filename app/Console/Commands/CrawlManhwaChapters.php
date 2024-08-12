@@ -98,7 +98,7 @@ class CrawlManhwaChapters extends Command
             return;
         }
 
-        Log::info("Raw output from script: {$output}");
+        // Log::info("Raw output from script: {$output}");
 
         // Decode the output
         $chapters = json_decode($output, true);
