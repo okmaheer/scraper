@@ -25,7 +25,6 @@ class CrawlManhwaChapters extends Command
     public function handle()
     {
         $manhwas = Manhwa::all();
-
         foreach ($manhwas as $manhwa) {
             Log::info("Checking for new chapters for: {$manhwa->name}");
             $this->info("Checking for new chapters for: {$manhwa->name}");
@@ -36,6 +35,13 @@ class CrawlManhwaChapters extends Command
             } else {
                 Log::info("No Manhwaclan link for: {$manhwa->name}");
                 $this->info("No Manhwaclan link for: {$manhwa->name}");
+            }
+               // Check Manhuafast
+               if (!empty($manhwa->asuracomic_link)) {
+                $this->checkChapters($manhwa, $manhwa->asuracomic_link, 'asuracomic');
+            } else {
+                Log::info("No Asuracomic link for: {$manhwa->name}");
+                $this->info("No Asuracomic link for: {$manhwa->name}");
             }
                // Check Manhuafast
                if (!empty($manhwa->mgdemon_link)) {
@@ -83,7 +89,10 @@ class CrawlManhwaChapters extends Command
         } else if($source == 'mgdemon') {
             $script = 'fetch_chapters_mgdemon.cjs';
             }
-        else {
+        elseif($source == 'asuracomic') {
+            $script = 'fetch_chapters_asuracomic.cjs';
+            }
+            else {
             $script = 'fetch_chapters_tecnoscans.cjs';
         }
         // Log the command being executed
@@ -97,7 +106,7 @@ class CrawlManhwaChapters extends Command
             $this->error("Failed to execute script for {$source}");
             return;
         }
-
+        
         // Log::info("Raw output from script: {$output}");
 
         // Decode the output

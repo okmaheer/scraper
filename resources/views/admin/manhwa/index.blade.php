@@ -54,7 +54,7 @@
                             <th>ManhwaClan Link</th>
                             <th>Tecnoscans Link</th>
                             <th>Mgdemon Link</th>
-                            <th>Flamecomics Link</th>
+                            <th>Asura Link</th>
                             <th>Starting Limit</th>
 
                         </tr>
@@ -87,7 +87,7 @@
  
                                     </td>
                                     <td>
-                                        {{ $manhwa->flamecomics_link }}
+                                        {{ $manhwa->asuracomic_link }}
  
                                     </td>
                                     <td>

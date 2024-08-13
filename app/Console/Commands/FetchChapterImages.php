@@ -73,6 +73,20 @@ class FetchChapterImages extends Command
                     return trim($node->attr('src'));
                 });
             }
+            else if($chapter->source == 'asuracomic') {
+                $images = $crawler->filter('div.w-full img')->each(function ($node) {
+                    $src = trim($node->attr('src'));
+                    // Check if the image URL matches the pattern for chapter images
+                    if (strpos($src, '/storage/comics/') !== false) {
+                        return $src;
+                    }
+                    return null; // Return null if the image doesn't match the desired pattern
+                });
+                // Filter out null values and re-index the array
+                $images = array_values(array_filter($images, function($value) {
+                    return !is_null($value);
+                }));
+            }
             else if($chapter->source == 'tecnoscans') {
                 $images = $this->fetchImagesWithPuppeteer(array_reverse(json_decode($chapter->link)));
             }
@@ -82,7 +96,6 @@ class FetchChapterImages extends Command
                 $this->error("No images found for chapter URL: {$chapter->link}");
                 return false;
             }
-
             $imageData = [];
 
             foreach ($images as $index => $image){

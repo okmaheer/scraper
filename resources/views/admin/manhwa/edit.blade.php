@@ -60,7 +60,7 @@
                             <span class="required">Manhwa Clan Link</span>
                         </label>
                         <!--end::Label-->
-                        <input type="text" class="form-control form-control-solid required" value="{{$manhwa->manhwaclan_link}}"  placeholder="Enter Fast Link" name="manhwaclan_link" />
+                        <input type="text" class="form-control form-control-solid required" value="{{$manhwa->manhwaclan_link}}"  placeholder="Enter Clan Link" name="manhwaclan_link" />
 
                     </div>
                     <div class="col-md-6">
@@ -69,7 +69,7 @@
                             <span class="required">Tecnoscans Clan Link</span>
                         </label>
                         <!--end::Label-->
-                        <input type="text" class="form-control form-control-solid required" value="{{$manhwa->tecnoscans_link}}"  placeholder="Enter Fast Link" name="tecnoscans_link" />
+                        <input type="text" class="form-control form-control-solid required" value="{{$manhwa->tecnoscans_link}}"  placeholder="Enter Tecnoscans Link" name="tecnoscans_link" />
 
                     </div>
                
@@ -93,7 +93,7 @@
                             <span class="required">Flame Comics Clan Link</span>
                         </label>
                         <!--end::Label-->
-                        <input type="text" class="form-control form-control-solid required" value="{{$manhwa->flamecomics_link}}"  placeholder="Enter Flame Link" name="flamecomics_link" />
+                        <input type="text" class="form-control form-control-solid required" value="{{$manhwa->asuracomic_link}}"  placeholder="Enter Asura Link" name="asuracomic_link" />
 
                     </div>
                

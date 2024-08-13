@@ -24,6 +24,7 @@ class ManhwaSeeder extends Seeder
                 // 'manhwaclan_link'=> 'https://manhwaclan.com/manga/dragon-devouring-mage/',
                 'tecnoscans_link'=> 'https://olyscans.xyz/manga/absolute-sword-sense/',
                 // 'mgdemon_link'=> 'https://mgdemon.org/manga/Academy%2527s-Genius-Swordsman-VA54',
+                 'asuracomic_link'=>'https://asuracomic.net/series/the-lords-coins-arent-decreasing-61cd691b',
                 // 'flamecomics_link'=>'',
                 // 'starting_limit'=> 10,
                 'created_at'=> Carbon::now(),
