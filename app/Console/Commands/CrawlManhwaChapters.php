@@ -86,13 +86,13 @@ class CrawlManhwaChapters extends Command
         }
 
         // Determine which script to use based on the source
-        if ($source == 'manhuafast' || $source == 'manhwaclan') {
+        if ($source == 'manhuafast') {
 
-            if ($source == 'manhuafast') {
+            // if ($source == 'manhuafast') {
                 $script = 'fetch_chapters_manhuafast.cjs';
-            } else if ($source == 'manhwaclan') {
-                $script = 'fetch_chapters_manhwaclan.cjs';
-            }
+            // } else if ($source == 'manhwaclan') {
+            //     $script = 'fetch_chapters_manhwaclan.cjs';
+            // }
 
             // Log the command being executed
             // if($manhwa->deep_check && $source == 'tecnoscans'){
@@ -146,7 +146,7 @@ class CrawlManhwaChapters extends Command
                 $chapters = array_filter($chapters, function ($chapter) {
                     return $chapter['number'] !== null;
                 });
-            } elseif ($source == 'asuracomic') {
+            } else if ($source == 'asuracomic') {
                 // Extract chapter links, numbers, and titles
                 $chapters = $crawler->filter('.pl-4.pr-2.pb-4 .group')->each(function ($node) {
                     $linkElement = $node->filter('h3 a');
@@ -169,7 +169,30 @@ class CrawlManhwaChapters extends Command
                 $chapters = array_filter($chapters, function ($chapter) {
                     return $chapter['number'] !== null;
                 });
-            } else {
+            } else if($source == 'manhwaclan'){
+                // Extract chapter links and numbers
+                $chapters = $crawler->filter('.listing-chapters_wrap .wp-manga-chapter a')->each(function ($node) {
+                    $text = $node->text();
+                    
+                    // Extract the chapter number using regex
+                    $chapterNumber = null;
+                    if (preg_match('/chapter\s*[\d.]+/i', $text, $matches)) {
+                        $chapterNumber = preg_replace('/chapter\s*/i', '', $matches[0]);
+                    }
+                    
+                    return [
+                        'url' => $node->attr('href'),
+                        'number' => $chapterNumber
+                    ];
+                });
+
+                // Filter out invalid chapters
+                $chapters = array_filter($chapters, function($chapter) {
+                    return $chapter['number'] !== null;
+                });
+
+                // Further processing of chapters as per your existing logic
+            }    else {
 
                 // Extract chapter links and numbers
                 $chapters = $crawler->filter('#chapterlist li .eph-num a')->each(function ($node) {
