@@ -90,7 +90,14 @@ Route::group(['middleware' => 'auth'], function () {
 
         });
 
-
+        // Route::controller(ChapterController::class)->group(function () {
+        //     Route::get('chapter-list/index', 'chapterListIndex')->name('chapter-list.index');
+        //     Route::get('chapter-list/create', 'create')->name('chapter-list.create');
+        //     Route::post('chapter-list/store', 'store')->name('chapter-list.store');
+        //     Route::get('chapter-list/edit/{id}', 'edit')->name('chapter-list.edit');
+        //     Route::post('chapter-list/update', 'update')->name('chapter-list.update');
+        //     Route::get('chapter-list/delete/{id}', 'delete')->name('chapter-list.delete');
+        // });
         Route::controller(UserController::class)->group(function () {
             Route::get('user/index', 'index')->name('user.index');
             Route::get('user/create', 'create')->name('user.create');

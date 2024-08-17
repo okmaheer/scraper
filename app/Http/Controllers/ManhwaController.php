@@ -236,6 +236,7 @@ class ManhwaController extends Controller
   {
     $data =    $request->all();
     unset($data['_token']);
+    // isset($data['deep_check']) ? $data['deep_check'] : $data['deep_check'] =false;
     Manhwa::where('id', $request->id)->update($data);
 
     return redirect()->route('admin.manhwa.index');

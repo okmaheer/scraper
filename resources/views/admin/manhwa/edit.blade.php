@@ -109,6 +109,17 @@
                         <input type="number" class="form-control form-control-solid required" placeholder="Enter limit" value="{{$manhwa->starting_limit}}"  name="starting_limit" />
 
                     </div>
+                    {{-- <div class="col-md-6">
+                        <!--begin::Label-->
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span>Deep check</span>
+                        </label>
+                        <!--end::Label-->
+                        <div class="form-check form-check-solid">
+                            <input class="form-check-input" type="checkbox" value="1" {{$manhwa->deep_check ? 'checked': ''}} name="deep_check" id="processedCheckbox">
+                           
+                        </div> --}}
+                    {{-- </div> --}}
                 </div>
 
 

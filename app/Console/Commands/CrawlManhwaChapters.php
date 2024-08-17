@@ -96,9 +96,16 @@ class CrawlManhwaChapters extends Command
             $script = 'fetch_chapters_tecnoscans.cjs';
         }
         // Log the command being executed
-        $command = "node scripts/{$script} {$url} 2>&1";
-        Log::info("Executing command: {$command}");
-
+        // if($manhwa->deep_check && $source == 'tecnoscans'){
+        //     $script = 'fetch_deep_check_chapters_tecnoscans.cjs';
+        //     $command = "node scripts/{$script} {$url} 2>&1";
+        //     Log::info("Executing command: {$command}");
+        // }else{
+            $command = "node scripts/{$script} {$url} 2>&1";
+            Log::info("Executing command: {$command}");
+    
+        // }
+      
         // Execute the command and capture output
         $output = shell_exec($command);
         if ($output === null) {

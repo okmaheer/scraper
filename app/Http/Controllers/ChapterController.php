@@ -53,4 +53,52 @@ class ChapterController extends Controller
     }
 
 
+    // public function create(Request $request){
+    //     $manhwas =Manhwa::orderBy('name', 'ASC')->get();
+    //     return view('admin.chapter.create', compact('manhwas'));
+    // }
+
+
+    // public function store(Request $request)
+    // {
+    //     $manhwa = Manhwa::first($request->manhwa_id);
+    //     // Validate the incoming request data
+    //     $chapter = Chapter::create([
+    //         'manhwa_id' => $manhwa->id,
+    //         'chapter_number' => $request->chapter_number,
+    //         'source' => $request->source,
+    //         'link' => $request->link,
+    //         'wp_chapter_id' => null
+    //     ]);
+    //     if ($manhwa->post_id) {
+    //         WpPostMeta::where('post_id', $manhwa->post_id)->where('meta_key', '_latest_update')->update([
+    //             'meta_value' => Carbon::now()->timestamp
+    //         ]);
+    //         $chapterNumberFormatted = str_replace('.', '-', $chapterNumber);
+    //         $slug = Str::slug("Chapter " . $chapterNumberFormatted);
+    //         $chapterData = [
+    //             "post_id" => $manhwa->post_id,
+    //             "volume_id" => 0,
+    //             "chapter_name" => "Chapter " . $chapterNumber,
+    //             "chapter_name_extend" => "",
+    //             "chapter_slug" => $slug,
+    //             "storage_in_use" => "local",
+    //             "date" => Carbon::now()->format('Y-m-d H:i:s'),
+    //             "date_gmt" => Carbon::now()->format('Y-m-d H:i:s'),
+    //             "chapter_index" => 0,
+    //             "chapter_seo" => null,
+    //             "chapter_warning" => null,
+    //             "chapter_status" => 0,
+    //             "chapter_metas" => ""
+    //         ];
+    //         $Wpchapter = WpMangaChapter::create($chapterData);
+    //         $chapter->wp_chapter_id = $Wpchapter->id;
+    //         $chapter->save();
+    
+    //     // Redirect back with a success message
+    //     return redirect()->back()->with('success', 'Chapter added successfully.');
+    // }
+    
+
+
 }
