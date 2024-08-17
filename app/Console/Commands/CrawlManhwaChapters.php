@@ -10,16 +10,18 @@ use App\Models\WpPostMeta;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use PDO;
+use GuzzleHttp\Client;
 
 class CrawlManhwaChapters extends Command
 {
     protected $signature = 'crawl:manhwa-chapters';
     protected $description = 'Crawl for new manhwa chapters and update the database';
+    protected $httpClient;
 
     public function __construct()
     {
         parent::__construct();
+        $this->httpClient = new Client();
     }
 
     public function handle()
@@ -36,15 +38,15 @@ class CrawlManhwaChapters extends Command
                 Log::info("No Manhwaclan link for: {$manhwa->name}");
                 $this->info("No Manhwaclan link for: {$manhwa->name}");
             }
-               // Check Manhuafast
-               if (!empty($manhwa->asuracomic_link)) {
+            // Check Manhuafast
+            if (!empty($manhwa->asuracomic_link)) {
                 $this->checkChapters($manhwa, $manhwa->asuracomic_link, 'asuracomic');
             } else {
                 Log::info("No Asuracomic link for: {$manhwa->name}");
                 $this->info("No Asuracomic link for: {$manhwa->name}");
             }
-               // Check Manhuafast
-               if (!empty($manhwa->mgdemon_link)) {
+            // Check Manhuafast
+            if (!empty($manhwa->mgdemon_link)) {
                 $this->checkChapters($manhwa, $manhwa->mgdemon_link, 'mgdemon');
             } else {
                 Log::info("No MGdemon link for: {$manhwa->name}");
@@ -74,6 +76,8 @@ class CrawlManhwaChapters extends Command
 
     protected function checkChapters($manhwa, $url, $source)
     {
+        $htmlContent = $this->httpClient->get($url)->getBody()->getContents();
+        $crawler = new \Symfony\Component\DomCrawler\Crawler($htmlContent);
         // Validate the URL
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
             Log::info("Invalid URL: {$url}");
@@ -82,109 +86,173 @@ class CrawlManhwaChapters extends Command
         }
 
         // Determine which script to use based on the source
-        if ($source == 'manhuafast') {
-            $script = 'fetch_chapters_manhuafast.cjs';
-        } else if ($source == 'manhwaclan') {
-            $script = 'fetch_chapters_manhwaclan.cjs';
-        } else if($source == 'mgdemon') {
-            $script = 'fetch_chapters_mgdemon.cjs';
+        if ($source == 'manhuafast' || $source == 'manhwaclan') {
+
+            if ($source == 'manhuafast') {
+                $script = 'fetch_chapters_manhuafast.cjs';
+            } else if ($source == 'manhwaclan') {
+                $script = 'fetch_chapters_manhwaclan.cjs';
             }
-        elseif($source == 'asuracomic') {
-            $script = 'fetch_chapters_asuracomic.cjs';
-            }
-            else {
-            $script = 'fetch_chapters_tecnoscans.cjs';
-        }
-        // Log the command being executed
-        // if($manhwa->deep_check && $source == 'tecnoscans'){
-        //     $script = 'fetch_deep_check_chapters_tecnoscans.cjs';
-        //     $command = "node scripts/{$script} {$url} 2>&1";
-        //     Log::info("Executing command: {$command}");
-        // }else{
+
+            // Log the command being executed
+            // if($manhwa->deep_check && $source == 'tecnoscans'){
+            //     $script = 'fetch_deep_check_chapters_tecnoscans.cjs';
+            //     $command = "node scripts/{$script} {$url} 2>&1";
+            //     Log::info("Executing command: {$command}");
+            // }else{
             $command = "node scripts/{$script} {$url} 2>&1";
             Log::info("Executing command: {$command}");
-    
-        // }
-      
-        // Execute the command and capture output
-        $output = shell_exec($command);
-        if ($output === null) {
-            Log::error("Failed to execute script for {$source}");
-            $this->error("Failed to execute script for {$source}");
-            return;
-        }
-        
-        // Log::info("Raw output from script: {$output}");
 
-        // Decode the output
-        $chapters = json_decode($output, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            Log::error("Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
-            $this->error("Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
-            $this->error($output);  // Show the raw output for debugging
-            return;
+            // }
+
+            // Execute the command and capture output
+            $output = shell_exec($command);
+            if ($output === null) {
+                Log::error("Failed to execute script for {$source}");
+                $this->error("Failed to execute script for {$source}");
+                return;
+            }
+
+            // Log::info("Raw output from script: {$output}");
+
+
+            // Decode the output
+            $chapters = json_decode($output, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error("Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
+                $this->error("Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
+                $this->error($output);  // Show the raw output for debugging
+                return;
+            }
+        } else {
+            if ($source == 'mgdemon') {
+                // Extract chapter links and numbers
+                $chapters = $crawler->filter('#chpagedlist li a')->each(function ($node) {
+                    $text = $node->filter('.chapter-title')->text();
+                    $chapterNumber = null;
+
+                    // Extract the chapter number from the text
+                    if (preg_match('/\d+/', $text, $matches)) {
+                        $chapterNumber = $matches[0];
+                    }
+
+                    return [
+                        'url' => 'https://mgdemon.org/' . $node->attr('href'),
+                        'number' => $chapterNumber
+                    ];
+                });
+
+                // Filter out invalid chapters
+                $chapters = array_filter($chapters, function ($chapter) {
+                    return $chapter['number'] !== null;
+                });
+            } elseif ($source == 'asuracomic') {
+                // Extract chapter links, numbers, and titles
+                $chapters = $crawler->filter('.pl-4.pr-2.pb-4 .group')->each(function ($node) {
+                    $linkElement = $node->filter('h3 a');
+                    $title = $linkElement->text();
+
+                    // Extract the chapter number using regex
+                    $chapterNumber = null;
+                    if (preg_match('/\d+/', $title, $matches)) {
+                        $chapterNumber = $matches[0];
+                    }
+
+                    return [
+                        'url' => 'https://asuracomic.net/series/' . $linkElement->attr('href'),
+                        'number' => $chapterNumber,
+                        'title' => trim($title)
+                    ];
+                });
+
+                // Filter out invalid chapters
+                $chapters = array_filter($chapters, function ($chapter) {
+                    return $chapter['number'] !== null;
+                });
+            } else {
+
+                // Extract chapter links and numbers
+                $chapters = $crawler->filter('#chapterlist li .eph-num a')->each(function ($node) {
+                    $text = $node->filter('.chapternum')->text();
+
+                    // Extract the chapter number using regex
+                    $chapterNumber = null;
+                    if (preg_match('/chapter\s*[\d.]+/i', $text, $matches)) {
+                        $chapterNumber = preg_replace('/chapter\s*/i', '', $matches[0]);
+                    }
+
+                    return [
+                        'url' => $node->attr('href'),
+                        'number' => $chapterNumber
+                    ];
+                });
+
+                // Filter out invalid chapters
+                $chapters = array_filter($chapters, function ($chapter) {
+                    return $chapter['number'] !== null;
+                });
+            }
         }
 
         if (count($chapters) !== Chapter::where('manhwa_id', $manhwa->id)->count()) {
             if ($source == 'tecnoscans') {
                 $this->mergeChapters($manhwa, $chapters, $source);
             } else {
-            foreach ($chapters as $chapter) {
-                $chapterUrl = $chapter['url'];
-                $chapterNumber = $chapter['number'];
-                // Check if the chapter number is greater than or equal to the starting limit
-                if (floatval($chapterNumber) < $manhwa->starting_limit) {
-                    $this->info("Skipping chapter {$chapterNumber} from {$source} due to starting limit.");
-                    continue;
-                }
-
-                // Check if chapter already exists
-                $existingChapter = Chapter::where('manhwa_id', $manhwa->id)
-                    ->where('chapter_number', $chapterNumber)
-                    ->first();
-                if (!$existingChapter) {
-                    $chapter = Chapter::create([
-                        'manhwa_id' => $manhwa->id,
-                        'chapter_number' => $chapterNumber,
-                        'source' => $source,
-                        'link' => $chapterUrl,
-                        'wp_chapter_id' => null
-                    ]);
-                    if ($manhwa->post_id) {
-                        WpPostMeta::where('post_id', $manhwa->post_id)->where('meta_key', '_latest_update')->update([
-                            'meta_value' => Carbon::now()->timestamp
-                        ]);
-                        $chapterNumberFormatted = str_replace('.', '-', $chapterNumber);
-                        $slug = Str::slug("Chapter " . $chapterNumberFormatted);
-                        $chapterData = [
-                            "post_id" => $manhwa->post_id,
-                            "volume_id" => 0,
-                            "chapter_name" => "Chapter " . $chapterNumber,
-                            "chapter_name_extend" => "",
-                            "chapter_slug" => $slug,
-                            "storage_in_use" => "local",
-                            "date" => Carbon::now()->format('Y-m-d H:i:s'),
-                            "date_gmt" => Carbon::now()->format('Y-m-d H:i:s'),
-                            "chapter_index" => 0,
-                            "chapter_seo" => null,
-                            "chapter_warning" => null,
-                            "chapter_status" => 0,
-                            "chapter_metas" => ""
-                        ];
-                        $Wpchapter = WpMangaChapter::create($chapterData);
-                        $chapter->wp_chapter_id = $Wpchapter->id;
-                        $chapter->save();
+                foreach ($chapters as $chapter) {
+                    $chapterUrl = $chapter['url'];
+                    $chapterNumber = $chapter['number'];
+                    // Check if the chapter number is greater than or equal to the starting limit
+                    if (floatval($chapterNumber) < $manhwa->starting_limit) {
+                        $this->info("Skipping chapter {$chapterNumber} from {$source} due to starting limit.");
+                        continue;
                     }
-                    Log::info("Added new chapter {$chapterNumber} from {$source}.");
-                    $this->info("Added new chapter {$chapterNumber} from {$source}.");
+
+                    // Check if chapter already exists
+                    $existingChapter = Chapter::where('manhwa_id', $manhwa->id)
+                        ->where('chapter_number', $chapterNumber)
+                        ->first();
+                    if (!$existingChapter) {
+                        $chapter = Chapter::create([
+                            'manhwa_id' => $manhwa->id,
+                            'chapter_number' => $chapterNumber,
+                            'source' => $source,
+                            'link' => $chapterUrl,
+                            'wp_chapter_id' => null
+                        ]);
+                        if ($manhwa->post_id) {
+                            WpPostMeta::where('post_id', $manhwa->post_id)->where('meta_key', '_latest_update')->update([
+                                'meta_value' => Carbon::now()->timestamp
+                            ]);
+                            $chapterNumberFormatted = str_replace('.', '-', $chapterNumber);
+                            $slug = Str::slug("Chapter " . $chapterNumberFormatted);
+                            $chapterData = [
+                                "post_id" => $manhwa->post_id,
+                                "volume_id" => 0,
+                                "chapter_name" => "Chapter " . $chapterNumber,
+                                "chapter_name_extend" => "",
+                                "chapter_slug" => $slug,
+                                "storage_in_use" => "local",
+                                "date" => Carbon::now()->format('Y-m-d H:i:s'),
+                                "date_gmt" => Carbon::now()->format('Y-m-d H:i:s'),
+                                "chapter_index" => 0,
+                                "chapter_seo" => null,
+                                "chapter_warning" => null,
+                                "chapter_status" => 0,
+                                "chapter_metas" => ""
+                            ];
+                            $Wpchapter = WpMangaChapter::create($chapterData);
+                            $chapter->wp_chapter_id = $Wpchapter->id;
+                            $chapter->save();
+                        }
+                        Log::info("Added new chapter {$chapterNumber} from {$source}.");
+                        $this->info("Added new chapter {$chapterNumber} from {$source}.");
+                    }
                 }
-            }
             }
         } else {
             Log::info("No new chapters found for {$manhwa->name} ({$source}).");
             $this->info("No new chapters found for {$manhwa->name} ({$source}).");
         }
-    
     }
     public function mergeChapters($manhwa, $chapters, $source)
     {
@@ -220,7 +288,7 @@ class CrawlManhwaChapters extends Command
             $existingChapter = Chapter::where('manhwa_id', $manhwa->id)
                 ->where('chapter_number', $chapter['number'])
                 ->first();
-                if (!$existingChapter) {
+            if (!$existingChapter) {
                 Log::info("Adding new chapter {$chapter['number']} from {$source}.");
                 $newchapter = Chapter::create([
                     'manhwa_id' => $manhwa->id,
@@ -234,7 +302,7 @@ class CrawlManhwaChapters extends Command
                         'meta_value' => Carbon::now()->timestamp
                     ]);
                     $chapterNumberFormatted = str_replace('.', '-', $chapter['number']);
-                    $slug = Str::slug("Chapter " . $chapterNumberFormatted);                  
+                    $slug = Str::slug("Chapter " . $chapterNumberFormatted);
                     $chapterData = [
                         "post_id" => $manhwa->post_id,
                         "volume_id" => 0,
