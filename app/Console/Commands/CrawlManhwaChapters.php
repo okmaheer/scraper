@@ -239,6 +239,7 @@ class CrawlManhwaChapters extends Command
                             'manhwa_id' => $manhwa->id,
                             'chapter_number' => $chapterNumber,
                             'source' => $source,
+                            'is_indexed' => false,
                             'link' => $chapterUrl,
                             'wp_chapter_id' => null
                         ]);
@@ -317,7 +318,9 @@ class CrawlManhwaChapters extends Command
                     'manhwa_id' => $manhwa->id,
                     'chapter_number' => $chapter['number'],
                     'link' => $chapter['url'],
-                    'source' => $source
+                    'source' => $source,
+                    'is_indexed' => false,
+
                 ]);
 
                 if ($manhwa->post_id) {
