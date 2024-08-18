@@ -34,7 +34,7 @@ class IndexNewManhwaChapters extends Command
         foreach ($manhwaList as $manhwa) {
             // Fetch the latest chapter for each manhwa that hasn't been indexed yet
             $chapter = $manhwa->chapters()
-                ->where('is_index', false)
+                ->where('is_indexed', false)
                 ->orderByRaw('CAST(chapter_number AS UNSIGNED) DESC')
                 ->first();
 
@@ -46,7 +46,7 @@ class IndexNewManhwaChapters extends Command
                 $response = $this->googleIndexingService->submitUrl($url);
                 if (isset($response['urlNotificationMetadata'])) {
                     // Mark the chapter as indexed
-                    $chapter->is_index = true;
+                    $chapter->is_indexed = true;
                     $chapter->save();
                     $this->info("Indexed: " . $url);
                 } else {

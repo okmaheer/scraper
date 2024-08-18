@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('chapters', function (Blueprint $table) {
-            $table->boolean('is_index')->nullable()->default(true)->after('source');
+            $table->boolean('is_indexed')->nullable()->default(true)->after('source');
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('chapters', function (Blueprint $table) {
-            $table->dropColumn(['is_index']);
+            $table->dropColumn(['is_indexed']);
         });
     }
 };
