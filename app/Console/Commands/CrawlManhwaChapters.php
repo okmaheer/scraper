@@ -26,7 +26,7 @@ class CrawlManhwaChapters extends Command
 
     public function handle()
     {
-        $manhwas = Manhwa::all();
+        $manhwas = Manhwa::orderBy('id','ASC')->get();
         foreach ($manhwas as $manhwa) {
             Log::info("{$manhwa->id} Checking for new chapters for: {$manhwa->name}");
             $this->info("{$manhwa->id} Checking for new chapters for: {$manhwa->name}");
