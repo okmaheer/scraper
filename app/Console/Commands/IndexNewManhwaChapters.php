@@ -7,6 +7,8 @@ use Illuminate\Console\Command;
 use App\Models\Manwha;
 use App\Services\GoogleIndexingService;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 
 class IndexNewManhwaChapters extends Command
 {
@@ -27,6 +29,8 @@ class IndexNewManhwaChapters extends Command
         $manhwaList = Manhwa::all();
 
         if ($manhwaList->isEmpty()) {
+            Log::info('No manhwa found.');
+
             $this->info('No manhwa found.');
             return;
         }
@@ -48,11 +52,18 @@ class IndexNewManhwaChapters extends Command
                     // Mark the chapter as indexed
                     $chapter->is_indexed = true;
                     $chapter->save();
+
+                    Log::info("Indexed: " . $url);
+
                     $this->info("Indexed: " . $url);
                 } else {
+                    Log::info("Failed to index: " . $url);
+
                     $this->error("Failed to index: " . $url);
                 }
             } else {
+                Log::info("No new chapters to index for manhwa: " . $manhwa->name);
+
                 $this->info("No new chapters to index for manhwa: " . $manhwa->name);
             }
         }
