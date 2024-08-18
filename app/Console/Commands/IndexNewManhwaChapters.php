@@ -39,11 +39,10 @@ class IndexNewManhwaChapters extends Command
         foreach ($manhwaList as $manhwa) {
             // Fetch the latest chapter for each manhwa that hasn't been indexed yet
             $chapter = $manhwa->chapters()
-                ->where('is_indexed', false)
                 ->orderByRaw('CAST(chapter_number AS UNSIGNED) DESC')
                 ->first();
 
-            if ($chapter) {
+            if (!$chapter->is_indexed) {
                 $chapterNumberFormatted = str_replace('.', '-', $chapter->chapter_number);
                 $slug = Str::slug("Chapter " . $chapterNumberFormatted);
 
