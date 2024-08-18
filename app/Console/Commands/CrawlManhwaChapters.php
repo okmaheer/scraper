@@ -28,45 +28,45 @@ class CrawlManhwaChapters extends Command
     {
         $manhwas = Manhwa::all();
         foreach ($manhwas as $manhwa) {
-            Log::info("Checking for new chapters for: {$manhwa->name}");
-            $this->info("Checking for new chapters for: {$manhwa->name}");
+            Log::info("{$manhwa->id} Checking for new chapters for: {$manhwa->name}");
+            $this->info("{$manhwa->id} Checking for new chapters for: {$manhwa->name}");
 
             // Check Manhwaclan
             if (!empty($manhwa->manhwaclan_link)) {
                 $this->checkChapters($manhwa, $manhwa->manhwaclan_link, 'manhwaclan');
             } else {
-                Log::info("No Manhwaclan link for: {$manhwa->name}");
-                $this->info("No Manhwaclan link for: {$manhwa->name}");
+                Log::info("{$manhwa->id} No Manhwaclan link for: {$manhwa->name}");
+                $this->info("{$manhwa->id} No Manhwaclan link for: {$manhwa->name}");
             }
             // Check Manhuafast
             if (!empty($manhwa->asuracomic_link)) {
                 $this->checkChapters($manhwa, $manhwa->asuracomic_link, 'asuracomic');
             } else {
-                Log::info("No Asuracomic link for: {$manhwa->name}");
-                $this->info("No Asuracomic link for: {$manhwa->name}");
+                Log::info("{$manhwa->id} No Asuracomic link for: {$manhwa->name}");
+                $this->info("{$manhwa->id} No Asuracomic link for: {$manhwa->name}");
             }
             // Check Manhuafast
             if (!empty($manhwa->mgdemon_link)) {
                 $this->checkChapters($manhwa, $manhwa->mgdemon_link, 'mgdemon');
             } else {
-                Log::info("No MGdemon link for: {$manhwa->name}");
-                $this->info("No MGdemon link for: {$manhwa->name}");
+                Log::info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
+                $this->info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
             }
             // Check Manhuafast
             if (!empty($manhwa->manhwafast_link)) {
                 $this->checkChapters($manhwa, $manhwa->manhwafast_link, 'manhuafast');
             } else {
-                Log::info("No Manhuafast link for: {$manhwa->name}");
-                $this->info("No Manhuafast link for: {$manhwa->name}");
+                Log::info("{$manhwa->id} No Manhuafast link for: {$manhwa->name}");
+                $this->info("{$manhwa->id} No Manhuafast link for: {$manhwa->name}");
             }
 
 
             if (!empty($manhwa->tecnoscans_link)) {
                 $this->checkChapters($manhwa, $manhwa->tecnoscans_link, 'tecnoscans');
             } else {
-                Log::info("No Manhwaclan link for: {$manhwa->name}");
+                Log::info("{$manhwa->id} No Manhwaclan link for: {$manhwa->name}");
 
-                $this->info("No Manhwaclan link for: {$manhwa->name}");
+                $this->info("{$manhwa->id} No Manhwaclan link for: {$manhwa->name}");
             }
         }
 
@@ -80,8 +80,8 @@ class CrawlManhwaChapters extends Command
         $crawler = new \Symfony\Component\DomCrawler\Crawler($htmlContent);
         // Validate the URL
         if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            Log::info("Invalid URL: {$url}");
-            $this->error("Invalid URL: {$url}");
+            Log::info("{$manhwa->id} Invalid URL: {$url}");
+            $this->error("{$manhwa->id} Invalid URL: {$url}");
             return;
         }
 
@@ -101,15 +101,15 @@ class CrawlManhwaChapters extends Command
             //     Log::info("Executing command: {$command}");
             // }else{
             $command = "node scripts/{$script} {$url} 2>&1";
-            Log::info("Executing command: {$command}");
+            Log::info("{$manhwa->id} Executing command: {$command}");
 
             // }
 
             // Execute the command and capture output
             $output = shell_exec($command);
             if ($output === null) {
-                Log::error("Failed to execute script for {$source}");
-                $this->error("Failed to execute script for {$source}");
+                Log::error("{$manhwa->id} Failed to execute script for {$source}");
+                $this->error("{$manhwa->id} Failed to execute script for {$source}");
                 return;
             }
 
@@ -119,8 +119,8 @@ class CrawlManhwaChapters extends Command
             // Decode the output
             $chapters = json_decode($output, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                Log::error("Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
-                $this->error("Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
+                Log::error("{$manhwa->id} Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
+                $this->error("{$manhwa->id} Failed to decode chapters from {$source}. Error: " . json_last_error_msg());
                 $this->error($output);  // Show the raw output for debugging
                 return;
             }
@@ -226,7 +226,7 @@ class CrawlManhwaChapters extends Command
                     $chapterNumber = $chapter['number'];
                     // Check if the chapter number is greater than or equal to the starting limit
                     if (floatval($chapterNumber) < $manhwa->starting_limit) {
-                        $this->info("Skipping chapter {$chapterNumber} from {$source} due to starting limit.");
+                        $this->info("{$manhwa->id} Skipping chapter {$chapterNumber} from {$source} due to starting limit.");
                         continue;
                     }
 
@@ -267,14 +267,14 @@ class CrawlManhwaChapters extends Command
                             $chapter->wp_chapter_id = $Wpchapter->id;
                             $chapter->save();
                         }
-                        Log::info("Added new chapter {$chapterNumber} from {$source}.");
-                        $this->info("Added new chapter {$chapterNumber} from {$source}.");
+                        Log::info("{$manhwa->id} Added new chapter {$chapterNumber} from {$source}.");
+                        $this->info("{$manhwa->id} Added new chapter {$chapterNumber} from {$source}.");
                     }
                 }
             }
         } else {
-            Log::info("No new chapters found for {$manhwa->name} ({$source}).");
-            $this->info("No new chapters found for {$manhwa->name} ({$source}).");
+            Log::info("{$manhwa->id} No new chapters found for {$manhwa->name} ({$source}).");
+            $this->info("{$manhwa->id} No new chapters found for {$manhwa->name} ({$source}).");
         }
     }
     public function mergeChapters($manhwa, $chapters, $source)
@@ -288,7 +288,7 @@ class CrawlManhwaChapters extends Command
 
             // Skip chapters below the starting limit
             if (floatval($chapterNumber) < $manhwa->starting_limit) {
-                $this->info("Skipping chapter {$chapterNumber} from {$source} due to starting limit.");
+                $this->info("{$manhwa->id} Skipping chapter {$chapterNumber} from {$source} due to starting limit.");
                 continue;
             }
 
@@ -306,7 +306,7 @@ class CrawlManhwaChapters extends Command
         // Process merged chapters
         foreach ($mergedChapters as $chapter) {
             $chapter['url'] = json_encode($chapter['url']);
-            $this->info("Processing chapter {$chapter['number']} from {$source}.");
+            $this->info("{$manhwa->id} Processing chapter {$chapter['number']} from {$source}.");
 
             $existingChapter = Chapter::where('manhwa_id', $manhwa->id)
                 ->where('chapter_number', $chapter['number'])
@@ -346,7 +346,7 @@ class CrawlManhwaChapters extends Command
                     $newchapter->save();
                 }
             } else {
-                Log::info("Chapter {$chapter['number']} from {$source} already exists.");
+                Log::info("{$manhwa->id} Chapter {$chapter['number']} from {$source} already exists.");
             }
         }
     }
