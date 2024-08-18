@@ -53,7 +53,7 @@ class IndexNewManhwaChapters extends Command
                     $this->error("Failed to index: " . $chapter->url);
                 }
             } else {
-                $this->info("No new chapters to index for manhwa: " . $manhwa->title);
+                $this->info("No new chapters to index for manhwa: " . $manhwa->name);
             }
         }
     }
