@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\IndexChapters;
 use App\Models\Manhwa;
 use Illuminate\Console\Command;
 use App\Models\Manwha;
@@ -50,6 +51,9 @@ class IndexNewManhwaChapters extends Command
                 $response = $this->googleIndexingService->submitUrl($url);
                 if (isset($response['urlNotificationMetadata'])) {
                     // Mark the chapter as indexed
+                    IndexChapters::create([
+                        'chapter_id'=>$chapter->id
+                    ]);
                     $chapter->is_indexed = true;
                     $chapter->save();
 

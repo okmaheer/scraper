@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChapterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\IndexChapterContoller;
 use App\Http\Controllers\ManhwaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserLoginController;
@@ -98,6 +99,11 @@ Route::group(['middleware' => 'auth'], function () {
         //     Route::post('chapter-list/update', 'update')->name('chapter-list.update');
         //     Route::get('chapter-list/delete/{id}', 'delete')->name('chapter-list.delete');
         // });
+
+        Route::controller(IndexChapterContoller::class)->group(function () {
+            Route::get('index-chapter/index', 'index')->name('index-chapter.index');
+      
+        });
         Route::controller(UserController::class)->group(function () {
             Route::get('user/index', 'index')->name('user.index');
             Route::get('user/create', 'create')->name('user.create');
