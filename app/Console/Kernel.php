@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')->hourly();
         // $schedule->command('chapter:check-delete')->dailyAt('00:00')->withoutOverlapping();
         $schedule->command('crawl:manhwa-chapters')->withoutOverlapping()->everyFiveMinutes();
-        $schedule->command('fetch:chapter-images')->withoutOverlapping()->everyFiveMinutes();
+        $schedule->command('fetch:chapter-images')->withoutOverlapping()->everyMinute();
         $schedule->command('manwha:index-new-chapters')->withoutOverlapping()->everyFiveMinutes();
 
 
