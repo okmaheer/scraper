@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Chapter;
 use App\Models\ChapterImages;
+use App\Models\IndexChapters;
 use App\Models\Manhwa;
 use App\Models\WpMangaChapter;
 use App\Models\WpMangaChapterData;
@@ -22,6 +23,8 @@ class ChapterController extends Controller
         $WpchapterData =WpMangaChapterData::where('chapter_id',$chapter->wp_chapter_id)->delete();
         $Wpchapter =WpMangaChapter::where('chapter_id',$chapter->wp_chapter_id)->delete();
         $chapterImages = ChapterImages::where('chapter_id',$chapter->id)->delete();
+        $chapterImages = IndexChapters::where('chapter_id',$chapter->id)->delete();
+
         $chapter->delete();
         return redirect()->back();
         
@@ -33,6 +36,8 @@ class ChapterController extends Controller
             $WpchapterData = WpMangaChapterData::where('chapter_id',$chapter->wp_chapter_id)->delete();
             $Wpchapter = WpMangaChapter::where('chapter_id',$chapter->wp_chapter_id)->delete();
             $chapterImages = ChapterImages::where('chapter_id',$chapter->id)->delete();
+            $chapterImages = IndexChapters::where('chapter_id',$chapter->id)->delete();
+
 
         }
 

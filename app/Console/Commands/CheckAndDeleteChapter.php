@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use App\Models\Chapter;
 use App\Models\ChapterImages;
 use App\Models\DeletedChapter;
+use App\Models\IndexChapters;
 use App\Models\WpMangaChapter;
 use App\Models\WpMangaChapterData;
 use Illuminate\Support\Facades\Log;
@@ -56,6 +57,8 @@ class CheckAndDeleteChapter extends Command
                 WpMangaChapterData::where('chapter_id',$chapterToDelete->wp_chapter_id)->delete();
                 WpMangaChapter::where('chapter_id',$chapterToDelete->wp_chapter_id)->delete();
                  ChapterImages::where('chapter_id',$chapterToDelete->id)->delete();
+                 IndexChapters::where('chapter_id',$chapterToDelete->id)->delete();
+
                 $chapterToDelete->delete();
 
                 Log::info("Deleted chapter with ID: $chapterId because one or more images do not exist.");
