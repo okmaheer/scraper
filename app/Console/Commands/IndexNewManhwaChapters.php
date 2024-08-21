@@ -56,18 +56,18 @@ class IndexNewManhwaChapters extends Command
                     $chapter->is_indexed = true;
                     $chapter->save();
 
-                    Log::info("Indexed: " . $url);
+                    Log::info($manhwa->id."Indexed: " . $url);
 
-                    $this->info("Indexed: " . $url);
+                    $this->info($manhwa->id."Indexed: " . $url);
                 } else {
-                    Log::info("Failed to index: " . $url);
+                    Log::info($manhwa->id."Failed to index: " . $url);
 
-                    $this->error("Failed to index: " . $url);
+                    $this->error($manhwa->id."Failed to index: " . $url);
                 }
             } else {
-                Log::info("No new chapters to index for manhwa: " . $manhwa->name);
+                Log::info($manhwa->id."No new chapters to index for manhwa: " . $manhwa->name);
 
-                $this->info("No new chapters to index for manhwa: " . $manhwa->name);
+                $this->info($manhwa->id."No new chapters to index for manhwa: " . $manhwa->name);
             }
         }
     }
