@@ -221,7 +221,6 @@ class CrawlManhwaChapters extends Command
                 });
             }
         }
-
         if (count($chapters) !== Chapter::where('manhwa_id', $manhwa->id)->count()) {
             if ($source == 'tecnoscans') {
                 $this->mergeChapters($manhwa, $chapters, $source);
@@ -308,6 +307,7 @@ class CrawlManhwaChapters extends Command
 
             $mergedChapters[$baseChapterNumber]['url'][] = $chapterUrl;
         }
+        $this->info($mergedChapters);
 
         // Process merged chapters
         foreach ($mergedChapters as $chapter) {
