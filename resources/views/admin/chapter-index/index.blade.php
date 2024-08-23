@@ -56,11 +56,11 @@
                                 <tr>
 
                                     <td>
-                                        {{ $chapter->chapter->chapter_number }}
+                                        {{ $chapter?->chapter?->chapter_number ?? '-' }}
  
                                     </td>
                                     <td>
-                                        {{ $chapter->chapter->manhwa->name }}
+                                        {{ $chapter?->chapter?->manhwa->name ?? '-' }}
                                     </td>
                                   
                                   
