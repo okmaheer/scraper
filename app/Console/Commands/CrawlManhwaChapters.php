@@ -26,7 +26,7 @@ class CrawlManhwaChapters extends Command
 
     public function handle()
     {
-        $manhwas = Manhwa::orderBy('id','ASC')->get();
+        $manhwas = Manhwa::orderBy('id', 'ASC')->get();
         foreach ($manhwas as $manhwa) {
             Log::info("{$manhwa->id} Checking for new chapters for: {$manhwa->name}");
             $this->info("{$manhwa->id} Checking for new chapters for: {$manhwa->name}");
@@ -86,13 +86,18 @@ class CrawlManhwaChapters extends Command
         }
 
         // Determine which script to use based on the source
-        if ($source == 'manhuafast') {
+        if ($source == 'manhuafast' || ($manhwa->deep_check && $source == 'tecnoscans')) {
 
             // if ($source == 'manhuafast') {
-                $script = 'fetch_chapters_manhuafast.cjs';
+            $script = 'fetch_chapters_manhuafast.cjs';
             // } else if ($source == 'manhwaclan') {
             //     $script = 'fetch_chapters_manhwaclan.cjs';
             // }
+            if ($manhwa->deep_check && $source == 'tecnoscans') {
+                $script = 'fetch_deep_check_chapters_tecnoscans.cjs';
+                $url = Chapter::where('manhwa_id', $manhwa->id)->where('source', 'tecnoscans')->first()->link;
+                $url = json_decode($url)[0];
+            }
 
             // Log the command being executed
             // if($manhwa->deep_check && $source == 'tecnoscans'){
@@ -104,9 +109,9 @@ class CrawlManhwaChapters extends Command
             Log::info("{$manhwa->id} Executing command: {$command}");
 
             // }
-
             // Execute the command and capture output
             $output = shell_exec($command);
+            dd($output);
             if ($output === null) {
                 Log::error("{$manhwa->id} Failed to execute script for {$source}");
                 $this->error("{$manhwa->id} Failed to execute script for {$source}");
@@ -169,17 +174,17 @@ class CrawlManhwaChapters extends Command
                 $chapters = array_filter($chapters, function ($chapter) {
                     return $chapter['number'] !== null;
                 });
-            } else if($source == 'manhwaclan'){
+            } else if ($source == 'manhwaclan') {
                 // Extract chapter links and numbers
                 $chapters = $crawler->filter('.listing-chapters_wrap .wp-manga-chapter a')->each(function ($node) {
                     $text = $node->text();
-                    
+
                     // Extract the chapter number using regex
                     $chapterNumber = null;
                     if (preg_match('/chapter\s*[\d.]+/i', $text, $matches)) {
                         $chapterNumber = preg_replace('/chapter\s*/i', '', $matches[0]);
                     }
-                    
+
                     return [
                         'url' => $node->attr('href'),
                         'number' => $chapterNumber
@@ -187,12 +192,12 @@ class CrawlManhwaChapters extends Command
                 });
 
                 // Filter out invalid chapters
-                $chapters = array_filter($chapters, function($chapter) {
+                $chapters = array_filter($chapters, function ($chapter) {
                     return $chapter['number'] !== null;
                 });
 
                 // Further processing of chapters as per your existing logic
-            }    else {
+            } else {
 
                 // Extract chapter links and numbers
                 $chapters = $crawler->filter('#chapterlist li .eph-num a')->each(function ($node) {

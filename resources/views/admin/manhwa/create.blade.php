@@ -113,7 +113,7 @@
                         <input type="number" class="form-control form-control-solid required" placeholder="Enter limit" name="starting_limit" />
 
                     </div>
-                    {{-- <div class="col-md-6">
+                    <div class="col-md-6">
                         <!--begin::Label-->
                         <label class="d-flex align-items-center fs-6 fw-bold mb-2">
                             <span>Deep check</span>
@@ -123,7 +123,7 @@
                             <input class="form-check-input" type="checkbox" value="1" name="deep_check" id="processedCheckbox">
                            
                         </div>
-                    </div> --}}
+                    </div>
                 </div>
 
            
