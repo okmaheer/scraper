@@ -94,6 +94,8 @@ class CrawlManhwaChapters extends Command
             //     $script = 'fetch_chapters_manhwaclan.cjs';
             // }
             if ($manhwa->deep_check && $source == 'tecnoscans') {
+                Log::info("{$manhwa->id} deep checking for chapters...");
+
                 $script = 'fetch_deep_check_chapters_tecnoscans.cjs';
                 $url = Chapter::where('manhwa_id', $manhwa->id)->where('source', 'tecnoscans')->first()->link;
                 $url = json_decode($url)[0];
@@ -290,7 +292,7 @@ class CrawlManhwaChapters extends Command
             $chapterUrl = $chapter['url'];
             $chapterNumber = $chapter['number'];
             $baseChapterNumber = (int)floor($chapterNumber);
-            $this->info($baseChapterNumber);
+            // $this->info($baseChapterNumber);
 
             // Skip chapters below the starting limit
             if (floatval($chapterNumber) < $manhwa->starting_limit) {
