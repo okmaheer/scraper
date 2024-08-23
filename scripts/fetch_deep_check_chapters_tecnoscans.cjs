@@ -12,8 +12,8 @@ const puppeteer = require('puppeteer');
   try {
     // Launch the browser with required arguments
     browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
     const page = await browser.newPage();
 
     // Increase navigation timeout to 60 seconds
@@ -38,9 +38,11 @@ const puppeteer = require('puppeteer');
       }
     }
 
-    // Extract chapter links and chapter numbers from the select options
+    // Extract chapter links and chapter numbers from the first select option
     const chapters = await page.evaluate(() => {
-      const options = Array.from(document.querySelectorAll('#chapter option'));
+      // Select the first <select> element
+      const firstSelect = document.querySelector('select:first-of-type');
+      const options = Array.from(firstSelect.querySelectorAll('option'));
       return options.map(option => ({
         url: option.value,
         number: option.textContent.trim().replace('Chapter ', '') // Remove 'Chapter ' prefix
