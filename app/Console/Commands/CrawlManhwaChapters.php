@@ -307,7 +307,7 @@ class CrawlManhwaChapters extends Command
 
             $mergedChapters[$baseChapterNumber]['url'][] = $chapterUrl;
         }
-        $this->info($mergedChapters);
+        $this->info(json_encode($mergedChapters));
 
         // Process merged chapters
         foreach ($mergedChapters as $chapter) {
