@@ -12,8 +12,8 @@ const puppeteer = require('puppeteer');
   try {
     // Launch the browser with required arguments
     browser = await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
-      });
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     const page = await browser.newPage();
 
     // Increase navigation timeout to 60 seconds
@@ -43,10 +43,14 @@ const puppeteer = require('puppeteer');
       // Select the first <select> element
       const firstSelect = document.querySelector('select:first-of-type');
       const options = Array.from(firstSelect.querySelectorAll('option'));
-      return options.map(option => ({
-        url: option.value,
-        number: option.textContent.trim().replace('Chapter ', '') // Remove 'Chapter ' prefix
-      })).filter(chapter => chapter.url); // Filter out options without a URL
+      return options.map(option => {
+        const numberText = option.textContent.trim().replace('Chapter ', '');
+        return {
+          url: option.value,
+          number: numberText
+        };
+      })
+      .filter(chapter => chapter.url && !isNaN(chapter.number)); // Filter out options without a URL and non-numeric numbers
     });
 
     // Send the chapter data back as JSON
