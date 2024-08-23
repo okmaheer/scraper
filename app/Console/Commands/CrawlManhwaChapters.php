@@ -111,7 +111,7 @@ class CrawlManhwaChapters extends Command
             // }
             // Execute the command and capture output
             $output = shell_exec($command);
-            dd($output);
+            // dd($output);
             if ($output === null) {
                 Log::error("{$manhwa->id} Failed to execute script for {$source}");
                 $this->error("{$manhwa->id} Failed to execute script for {$source}");
