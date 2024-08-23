@@ -290,6 +290,7 @@ class CrawlManhwaChapters extends Command
             $chapterUrl = $chapter['url'];
             $chapterNumber = $chapter['number'];
             $baseChapterNumber = (int)floor($chapterNumber);
+            $this->info($baseChapterNumber);
 
             // Skip chapters below the starting limit
             if (floatval($chapterNumber) < $manhwa->starting_limit) {
