@@ -54,7 +54,10 @@ class IndexNewManhwaChapters extends Command
                         if (isset($response['urlNotificationMetadata'])) {
                             // Mark the chapter as indexed
                             $index = IndexChapters::create([
-                                'chapter_id' => $chapter->id
+                                'chapter_id' => $chapter->id,
+                                'indexed_url' => $url,
+                                'response' => json_encode($chapter->response)
+
                             ]);
                             $this->info($index . " Indexed: " . $url);
     

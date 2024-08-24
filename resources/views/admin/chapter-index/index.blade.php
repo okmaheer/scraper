@@ -43,8 +43,12 @@
                     <!--begin::Table head-->
                     <thead>
                         <tr class="fw-bolder text-muted">
+                            <th>ID</th>
                             <th>Chapter Number</th>
                             <th>Manhwa Name</th>
+                            <th>Index Url</th>
+                            <th>Response</th>
+
 
                         </tr>
                     </thead>
@@ -54,13 +58,22 @@
                         @isset($chapters)
                             @foreach ($chapters as $chapter)
                                 <tr>
-
+                                    <td>
+                                        {{ $chapter?->id ?? '-' }}
+ 
+                                    </td>
                                     <td>
                                         {{ $chapter?->chapter?->chapter_number ?? '-' }}
  
                                     </td>
                                     <td>
                                         {{ $chapter?->chapter?->manhwa->name ?? '-' }}
+                                    </td>
+                                    <td>
+                                        {{ $chapter?->indexed_url ?? '-' }}
+                                    </td>
+                                    <td>
+                                        {{ $chapter?->response ?? '-' }}
                                     </td>
                                   
                                   
