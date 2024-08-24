@@ -56,7 +56,7 @@ class IndexNewManhwaChapters extends Command
                             $index = IndexChapters::create([
                                 'chapter_id' => $chapter->id,
                                 'indexed_url' => $url,
-                                'response' => json_encode($chapter->response)
+                                'response' => json_encode($response)
 
                             ]);
                             $this->info($index . " Indexed: " . $url);
