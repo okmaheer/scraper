@@ -45,13 +45,13 @@ class CrawlManhwaChapters extends Command
                 Log::info("{$manhwa->id} No Asuracomic link for: {$manhwa->name}");
                 $this->info("{$manhwa->id} No Asuracomic link for: {$manhwa->name}");
             }
-            // Check Manhuafast
-            if (!empty($manhwa->mgdemon_link)) {
-                $this->checkChapters($manhwa, $manhwa->mgdemon_link, 'mgdemon');
-            } else {
-                Log::info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
-                $this->info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
-            }
+            // // Check Manhuafast
+            // if (!empty($manhwa->mgdemon_link)) {
+            //     $this->checkChapters($manhwa, $manhwa->mgdemon_link, 'mgdemon');
+            // } else {
+            //     Log::info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
+            //     $this->info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
+            // }
             // Check Manhuafast
             if (!empty($manhwa->manhwafast_link)) {
                 $this->checkChapters($manhwa, $manhwa->manhwafast_link, 'manhuafast');

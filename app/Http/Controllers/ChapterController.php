@@ -58,10 +58,10 @@ class ChapterController extends Controller
     }
 
 
-    // public function create(Request $request){
-    //     $manhwas =Manhwa::orderBy('name', 'ASC')->get();
-    //     return view('admin.chapter.create', compact('manhwas'));
-    // }
+    public function create(Request $request){
+        $manhwas =Manhwa::orderBy('name', 'ASC')->get();
+        return view('admin.chapter.create', compact('manhwas'));
+    }
 
 
     // public function store(Request $request)
