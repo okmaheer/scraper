@@ -88,7 +88,7 @@ class FetchChapterImages extends Command
                 }));
             }
             else if($chapter->source == 'tecnoscans') {
-                $images = $this->fetchImagesWithPuppeteer(array_reverse(json_decode($chapter->link)));
+                // $images = $this->fetchImagesWithPuppeteer(array_reverse(json_decode($chapter->link)));
             }
             if (empty($images)) {
                 Log::info("No images found for chapter URL: {$chapter->link}");
