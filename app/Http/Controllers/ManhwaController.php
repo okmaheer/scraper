@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Manhwa;
 use App\Models\WpPostMeta;
 use App\Models\WpPosts;
+use App\Models\WpTermRelationships;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -31,9 +32,9 @@ class ManhwaController extends Controller
   public function store(Request $request)
   {
 
-    try{
-      DB::transaction(function () use ($request){
-          
+    try {
+      DB::transaction(function () use ($request) {
+
         $manhwa =  Manhwa::create($request->all());
 
         // Create the post without the guid field
@@ -61,22 +62,17 @@ class ManhwaController extends Controller
           "comment_count" => 0,
           "wp_manga_search_text" => $manhwa->name . "|Chapter 1-"
         ]);
-    
+
         // Update the post with the correct guid
         $post->guid = "https://manhwacollection.com/?post_type=wp-manga;p=" . $post->id;
         $post->save();
-    
+
         $manhwa->post_id = $post->id;
         $manhwa->save();
         $this->addPostMetaData($manhwa, $post);
       });
-
-
-  
-
-    }
-    catch(\Exception $e){
-      throw($e);
+    } catch (\Exception $e) {
+      throw ($e);
     }
 
     return redirect()->route('admin.manhwa.index');
@@ -96,7 +92,7 @@ class ManhwaController extends Controller
       [
         "post_id" => $post->id,
         "meta_key" => "manga_unique_id",
-        "meta_value" => "manga_".$post->id,
+        "meta_value" => "manga_" . $post->id,
       ],
       [
         "post_id" => $post->id,
@@ -223,6 +219,36 @@ class ManhwaController extends Controller
     foreach ($metaData as $meta) {
       WpPostMeta::create($meta);
     }
+    $termData = [
+      [
+        'object_id' => $post->id,
+        'term_taxonomy_id' => 575,
+        'term_order' => 0
+      ],
+      [
+        'object_id' => $post->id,
+        'term_taxonomy_id' => 572,
+        'term_order' => 0
+      ],
+      [
+        'object_id' => $post->id,
+        'term_taxonomy_id' => 571,
+        'term_order' => 0
+      ],
+      [
+        'object_id' => $post->id,
+        'term_taxonomy_id' => 570,
+        'term_order' => 0
+      ],
+      [
+        'object_id' => $post->id,
+        'term_taxonomy_id' => 569,
+        'term_order' => 0
+      ]
+    ];
+    foreach ($termData as $data) {
+      WpTermRelationships::create($data);
+    }
   }
 
   public function edit(Request $request, $id)
@@ -236,7 +262,7 @@ class ManhwaController extends Controller
   {
     $data =    $request->all();
     unset($data['_token']);
-    isset($data['deep_check']) ? $data['deep_check'] : $data['deep_check'] =false;
+    isset($data['deep_check']) ? $data['deep_check'] : $data['deep_check'] = false;
     Manhwa::where('id', $request->id)->update($data);
 
     return redirect()->route('admin.manhwa.index');
