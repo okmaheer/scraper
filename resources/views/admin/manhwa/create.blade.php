@@ -125,6 +125,31 @@
                         </div>
                     </div>
                 </div>
+                <div class="row g-9 mb-8">
+                    <div class="col-md-12">
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span>Description</span>
+                        </label>
+                        <!--end::Label-->
+                        <div class="form-check form-check-solid">
+                            <textarea class="form-control form-control-solid required"  rows="4" cols="4" name="description" ></textarea>
+                           
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-9 mb-8">
+                    <div class="col-md-12">
+                        <label class="d-flex align-items-center fs-6 fw-bold mb-2">
+                            <span>Alternative Name</span>
+                        </label>
+                        <!--end::Label-->
+                        <div class="form-check form-check-solid">
+
+                            <input  class="form-control form-control-solid required" type="text"  name="alternative_name" >
+                           
+                        </div>
+                    </div>
+                </div>
 
            
 

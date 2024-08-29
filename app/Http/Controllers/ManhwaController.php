@@ -42,7 +42,7 @@ class ManhwaController extends Controller
           "post_author" => 1,
           "post_date" => Carbon::now()->format('Y-m-d H:i:s'),
           "post_date_gmt" => Carbon::now()->format('Y-m-d H:i:s'),
-          "post_content" => "description",
+          "post_content" => $manhwa->description,
           "post_title" => $manhwa->name,
           "post_excerpt" => "",
           "post_status" => "publish",
@@ -157,7 +157,7 @@ class ManhwaController extends Controller
       [
         "post_id" => $post->id,
         "meta_key" => "_wp_manga_alternative",
-        "meta_value" => $manhwa->name,
+        "meta_value" => $manhwa->alternative_name,
       ],
       [
         "post_id" => $post->id,

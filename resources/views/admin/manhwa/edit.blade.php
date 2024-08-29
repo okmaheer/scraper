@@ -121,10 +121,7 @@
                         </div>
                      </div>
                 </div>
-
-
-
-
+              
                 <div class="row g-9 mb-8">
                
                     <input type="hidden" name="id" value="{{ $manhwa->id }}">
