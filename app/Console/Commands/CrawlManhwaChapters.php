@@ -46,12 +46,12 @@ class CrawlManhwaChapters extends Command
                 $this->info("{$manhwa->id} No Asuracomic link for: {$manhwa->name}");
             }
             // // Check Manhuafast
-            // if (!empty($manhwa->mgdemon_link)) {
-            //     $this->checkChapters($manhwa, $manhwa->mgdemon_link, 'mgdemon');
-            // } else {
-            //     Log::info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
-            //     $this->info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
-            // }
+            if (!empty($manhwa->mgdemon_link)) {
+                $this->checkChapters($manhwa, $manhwa->mgdemon_link, 'mgdemon');
+            } else {
+                Log::info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
+                $this->info("{$manhwa->id} No MGdemon link for: {$manhwa->name}");
+            }
             // Check Manhuafast
             if (!empty($manhwa->manhwafast_link)) {
                 $this->checkChapters($manhwa, $manhwa->manhwafast_link, 'manhuafast');
@@ -133,26 +133,27 @@ class CrawlManhwaChapters extends Command
             }
         } else {
             if ($source == 'mgdemon') {
-                // Extract chapter links and numbers
-                $chapters = $crawler->filter('#chpagedlist li a')->each(function ($node) {
-                    $text = $node->filter('.chapter-title')->text();
-                    $chapterNumber = null;
-
-                    // Extract the chapter number from the text
-                    if (preg_match('/\d+/', $text, $matches)) {
-                        $chapterNumber = $matches[0];
-                    }
-
-                    return [
-                        'url' => 'https://mgdemon.org/' . $node->attr('href'),
-                        'number' => $chapterNumber
-                    ];
-                });
-
-                // Filter out invalid chapters
-                $chapters = array_filter($chapters, function ($chapter) {
-                    return $chapter['number'] !== null;
-                });
+                    // Extract chapter links and numbers
+                    $chapters = $crawler->filter('#chapters-list li a')->each(function ($node) {
+                        $text = $node->text();
+                        $chapterNumber = null;
+                
+                        // Extract the chapter number from the text
+                        if (preg_match('/\d+/', $text, $matches)) {
+                            $chapterNumber = $matches[0];
+                        }
+                
+                        return [
+                            'url' => 'https://demonicscans.org' . $node->attr('href'),
+                            'number' => $chapterNumber
+                        ];
+                    });
+                    // Filter out invalid chapters
+                    $chapters = array_filter($chapters, function ($chapter) {
+                        return $chapter['number'] !== null;
+                    });
+                
+                
             } else if ($source == 'asuracomic') {
                 // Extract chapter links, numbers, and titles
                 $chapters = $crawler->filter('.pl-4.pr-2.pb-4 .group')->each(function ($node) {
