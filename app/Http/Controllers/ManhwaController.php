@@ -242,6 +242,16 @@ class ManhwaController extends Controller
       ],
       [
         'object_id' => $post->id,
+        'term_taxonomy_id' => 593,
+        'term_order' => 0
+      ],
+      [
+        'object_id' => $post->id,
+        'term_taxonomy_id' => 592,
+        'term_order' => 0
+      ],
+      [
+        'object_id' => $post->id,
         'term_taxonomy_id' => 569,
         'term_order' => 0
       ]

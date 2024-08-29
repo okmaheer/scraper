@@ -58,7 +58,7 @@ class FetchChapterImages extends Command
             $htmlContent = $this->httpClient->get($chapter->link)->getBody()->getContents();
             $crawler = new \Symfony\Component\DomCrawler\Crawler($htmlContent);
             }
-
+            
             if($chapter->source == 'manhuafast'){
                 $images = $crawler->filter('.reading-content .page-break img')->each(function ($node) {
                     return trim($node->attr('data-src'));
