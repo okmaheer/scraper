@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 
 class CrawlManhwaChapters extends Command
 {
@@ -26,6 +27,8 @@ class CrawlManhwaChapters extends Command
 
     public function handle()
     {
+        try {
+    
         $manhwas = Manhwa::orderBy('id', 'ASC')->get();
         foreach ($manhwas as $manhwa) {
             Log::info("{$manhwa->id} Checking for new chapters for: {$manhwa->name}");
@@ -74,6 +77,10 @@ class CrawlManhwaChapters extends Command
 
         Log::info("Crawling completed.");
         $this->info('Crawling completed.');
+    } catch (RequestException $e) {
+        Log::error("Error checking chapters: " . $e->getMessage());
+        $this->error("Error checking chapters: " . $e->getMessage());
+    }
     }
 
     protected function checkChapters($manhwa, $url, $source)
