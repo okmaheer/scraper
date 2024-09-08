@@ -36,7 +36,7 @@ class CheckAndDeleteChapter extends Command
                 ->groupBy('manhwa_id');
         })
         ->get();
-    
+    dd($chaptersToDelete);
     foreach ($chaptersToDelete as $chapter) {
         // Delete associated WpMangaChapterData
         Log::info('deleting chapter'.$chapter->chapter_number);
