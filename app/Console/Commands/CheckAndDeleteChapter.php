@@ -29,14 +29,15 @@ class CheckAndDeleteChapter extends Command
         // Fetch all chapters
         $chaptersToDelete = Chapter::where('source', 'tecnoscans')
         ->where('processed', false)
-        ->whereNotIn('chapter_number', function ($query) {
-            $query->select(DB::raw('MAX(chapter_number)'))
+        ->whereNotIn('id', function ($query) {
+            $query->select(DB::raw('MAX(id)'))
                 ->from('chapters')
                 ->where('source', 'tecnoscans')
                 ->groupBy('manhwa_id');
         })
         ->get();
-    dd($chaptersToDelete);
+    
+    
     foreach ($chaptersToDelete as $chapter) {
         // Delete associated WpMangaChapterData
         Log::info('deleting chapter'.$chapter->chapter_number);
